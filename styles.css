@@ -135,7 +135,7 @@ a:active {
 .left-sidebar,
 .right-sidebar {
   position: absolute;
-  top: 8px;
+  top: 30px;
   z-index: 12;
   padding: 15px;
   font-size: 1.04rem;
