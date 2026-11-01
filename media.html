@@ -10,6 +10,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      gap: 20px;
       background: url("cybersigilangel.jpg");
       font-family: serif;
       color: black;
@@ -32,10 +33,12 @@ body::before {
     }
 
     #favorites {
-      width: 200px;
-      height: 360px;
-      padding: 20px 10px;
+      width: 380px;
+      height: 500px;
+      padding: 20px 10px 10px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
     }
 
     #favorites h2,
@@ -44,12 +47,60 @@ body::before {
       font-weight: normal;
     }
 
+    .selector {
+      margin-bottom: 10px;
+    }
+
     .selector button {
       background: none;
       border: none;
       font-family: inherit;
       font-size: 1em;
       cursor: pointer;
+    }
+
+    /* favorites grid */
+    #fav-area {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px 12px;
+      border-top: 2px solid black;
+    }
+
+    .fav-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .fav-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .fav-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+    .fav-item {
+      display: block;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .fav-item img {
+      display: block;
+      width: 100%;
+      object-fit: cover;
+      border: 2px solid black;
+      background: white;
+    }
+
+    .fav-grid.portrait img { aspect-ratio: 3 / 4; }
+    .fav-grid.poster img   { aspect-ratio: 2 / 3; }
+    .fav-grid.square img   { aspect-ratio: 1 / 1; }
+
+    .fav-item:hover {
+      transform: rotate(-3deg) scale(1.1);
+      z-index: 1;
+    }
+
+    .fav-item:nth-child(even):hover {
+      transform: rotate(3deg) scale(1.1);
     }
 
     #reviews {
@@ -158,6 +209,9 @@ body::before {
       <button id="prev">&lt;</button>
       <span id="category">characters</span>
       <button id="next">&gt;</button>
+    </div>
+    <div id="fav-area">
+      <div id="fav-grid" class="fav-grid"></div>
     </div>
   </div>
 
@@ -388,20 +442,97 @@ body::before {
   </div>
 
   <script>
+    // favorites data: edit these lists to swap in your own images/links
+    const ph = (text, w, h) =>
+      `https://placehold.co/${w}x${h}/e8e8e8/000000?text=${encodeURIComponent(text)}`;
+
+    const favorites = {
+      characters: {
+        layout: "cols-3 portrait",
+        items: [
+          { name: "Solid Snake",     img: ph("Solid Snake", 300, 400),  url: "https://metalgear.fandom.com/wiki/Solid_Snake" },
+          { name: "Raiden",          img: ph("Raiden", 300, 400),       url: "https://metalgear.fandom.com/wiki/Raiden" },
+          { name: "Revolver Ocelot", img: ph("Ocelot", 300, 400),       url: "https://metalgear.fandom.com/wiki/Revolver_Ocelot" },
+          { name: "Otacon",          img: ph("Otacon", 300, 400),       url: "https://metalgear.fandom.com/wiki/Hal_Emmerich" },
+          { name: "The Boss",        img: ph("The Boss", 300, 400),     url: "https://metalgear.fandom.com/wiki/The_Boss" },
+          { name: "Liquid Snake",    img: ph("Liquid Snake", 300, 400), url: "https://metalgear.fandom.com/wiki/Liquid_Snake" }
+        ]
+      },
+      games: {
+        layout: "cols-2 poster",
+        items: [
+          { name: "Metal Gear Solid 1", img: ph("MGS 1", 300, 450),         url: "https://store.steampowered.com/agecheck/app/2131630/" },
+          { name: "Metal Gear Solid 2", img: ph("MGS 2", 300, 450),         url: "https://store.steampowered.com/agecheck/app/2131640/" },
+          { name: "Metal Gear Solid 3", img: ph("MGS 3", 300, 450),         url: "https://store.steampowered.com/agecheck/app/2131650/" },
+          { name: "Hollow Knight",      img: ph("Hollow Knight", 300, 450), url: "https://store.steampowered.com/app/367520/" },
+          { name: "Disco Elysium",      img: ph("Disco Elysium", 300, 450), url: "https://store.steampowered.com/app/632470/" },
+          { name: "Undertale",          img: ph("Undertale", 300, 450),     url: "https://store.steampowered.com/app/391540/" }
+        ]
+      },
+      movies: {
+        layout: "cols-2 poster",
+        items: [
+          { name: "Superman (2025)",    img: ph("Superman", 300, 450),      url: "https://letterboxd.com/film/superman-2025/" },
+          { name: "The Descent",        img: ph("The Descent", 300, 450),   url: "https://letterboxd.com/film/the-descent/" },
+          { name: "Spirited Away",      img: ph("Spirited Away", 300, 450), url: "https://letterboxd.com/film/spirited-away/" },
+          { name: "Parasite",           img: ph("Parasite", 300, 450),      url: "https://letterboxd.com/film/parasite-2019/" },
+          { name: "The Thing",          img: ph("The Thing", 300, 450),     url: "https://letterboxd.com/film/the-thing-1982/" },
+          { name: "Mad Max: Fury Road", img: ph("Fury Road", 300, 450),     url: "https://letterboxd.com/film/mad-max-fury-road/" }
+        ]
+      },
+      books: {
+        layout: "cols-2 poster",
+        items: [
+          { name: "Mossflower",                       img: ph("Mossflower", 300, 450),       url: "https://www.goodreads.com/book/show/201341.Mossflower" },
+          { name: "The Forgotten Beasts of Eld",      img: ph("Forgotten Beasts", 300, 450), url: "https://www.goodreads.com/book/show/81069.The_Forgotten_Beasts_of_Eld" },
+          { name: "The Tea Girl of Hummingbird Lane", img: ph("Tea Girl", 300, 450),         url: "https://www.goodreads.com/book/show/25150798-the-tea-girl-of-hummingbird-lane" },
+          { name: "Towards Zero",                     img: ph("Towards Zero", 300, 450),     url: "https://www.goodreads.com/book/show/12168274-towards-zero" },
+          { name: "The Travelling Cat Chronicles",    img: ph("Travelling Cat", 300, 450),   url: "https://www.goodreads.com/book/show/40961230-the-travelling-cat-chronicles" },
+          { name: "The Village of Eight Graves",      img: ph("Eight Graves", 300, 450),     url: "https://www.goodreads.com/book/show/56887117-the-village-of-eight-graves" }
+        ]
+      },
+      music: {
+        layout: "cols-2 square",
+        items: [
+          { name: "OK Computer", img: ph("OK Computer", 400, 400), url: "https://en.wikipedia.org/wiki/OK_Computer" },
+          { name: "Kid A",       img: ph("Kid A", 400, 400),       url: "https://en.wikipedia.org/wiki/Kid_A" },
+          { name: "In Rainbows", img: ph("In Rainbows", 400, 400), url: "https://en.wikipedia.org/wiki/In_Rainbows" },
+          { name: "Rumours",     img: ph("Rumours", 400, 400),     url: "https://en.wikipedia.org/wiki/Rumours_(album)" },
+          { name: "Currents",    img: ph("Currents", 400, 400),    url: "https://en.wikipedia.org/wiki/Currents_(Tame_Impala_album)" },
+          { name: "Blonde",      img: ph("Blonde", 400, 400),      url: "https://en.wikipedia.org/wiki/Blonde_(Frank_Ocean_album)" }
+        ]
+      }
+    };
+
     // favorites category selector
-    const categories = ["characters", "games", "movies", "books", "music"];
+    const categories = Object.keys(favorites);
     let index = 0;
     const label = document.getElementById("category");
+    const favGrid = document.getElementById("fav-grid");
+
+    function showCategory() {
+      const cat = favorites[categories[index]];
+      label.textContent = categories[index];
+      favGrid.className = "fav-grid " + cat.layout;
+      favGrid.innerHTML = cat.items.map(item => `
+        <a class="fav-item" href="${item.url}" target="_blank" title="${item.name}">
+          <img src="${item.img}" alt="${item.name}">
+        </a>
+      `).join("");
+      document.getElementById("fav-area").scrollTop = 0;
+    }
 
     document.getElementById("prev").onclick = () => {
       index = (index - 1 + categories.length) % categories.length;
-      label.textContent = categories[index];
+      showCategory();
     };
 
     document.getElementById("next").onclick = () => {
       index = (index + 1) % categories.length;
-      label.textContent = categories[index];
+      showCategory();
     };
+
+    showCategory();
 
     // expandable reviews
     function toggleReview(button) {
