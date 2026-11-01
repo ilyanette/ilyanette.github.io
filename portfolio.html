@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>portfolio</title>
+
+<style>
+#lightbox {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+#lightbox-img {
+    display: block;
+    margin: auto;
+    max-width: 90%;
+    max-height: 80%;
+}
+
+#close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.art {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.art:hover {
+    opacity: 0.8;
+}
+</style>
+
+</head>
+<body>
+
+    
+
+    <center>
+        <h1>portfolio</h1>
+        <p> click on works to view them in higher quality. please do not claim any art on this page as yours or use it as graphics on your own site. <p>
+        <p> since this page is under construction my own art isnt here yet, check back later </p>
+        <a href="index.html">home</a>
+        <a href="comms.html">commission info this should be a dropdown later</a>
+    </center>
+
+      <div>
+          <img src="https://lycorislazuli.neocities.org/generalgraphics/angela.jpg" class="art" height="500">
+          <img src="https://lycorislazuli.neocities.org/generalgraphics/dollgirl.jpg" class="art" height="500">
+          <img src="https://lycorislazuli.neocities.org/art/fluttershy.jpg" class="art" height="500">
+      </div>
+      
+      
+      <div id="lightbox">
+        <span id="close">&times;</span>
+        <img id="lightbox-img">
+      </div>
+      
+<script>
+const images = document.querySelectorAll(".art");
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightbox-img");
+const close = document.getElementById("close");
+
+images.forEach(img => {
+    img.addEventListener("click", () => {
+        lightbox.style.display = "block";
+        lightboxImg.src = img.src;
+    });
+});
+
+close.addEventListener("click", () => {
+    lightbox.style.display = "none";
+});
+</script>
+
+</body>
+</html>

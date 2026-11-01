@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>marionette ꫂ᭪ blog</title>
+    <meta name="author" content="amane higanbana">
+    <meta name="description" content="[write about your site here]">
+  <!--you can change this to "simplified-style.css" if changing all the individual colors is too overwhelming-->
+    <link href="blogstyle.css" rel="stylesheet" type="text/css" media="all">
+  </head>
+  <body class="angelic-overlay">
+  <div class="crt">
+    
+    <!--keep everything inside a container so we can change the layout for mobile easily-->
+    <div id="container">
+
+    <aside id="sidebar">
+        <!--another container for layout purposes-->
+        <div class="flex">
+            
+            <div id="icon">
+                <!--replace this with the page url so people can refresh the page easily... at least that's what i always click on people's icons to do.-->
+                <a href="blog.html">
+                    <img src="images/getoicon.jpg" alt="icon">
+                </a>
+            </div>
+            
+            <section id="profile">
+                <h1>
+                <!--same here, link to your page (if you want)-->
+                    <a href="https://neocities.org/site/lycorislazuli">amane</a>
+                </h1>
+                <!--the first line of your profile~ describe yourself in one sentence or something-->
+                <p></p>
+                
+                <div id="bio">
+                    <p>webmistress of the "marionette" site and overworked college student</p>
+                    <p>some content discussed on this blog is likely not suitable to minors, so be aware</p>
+                    <!--this is set up to link to your homepage-->
+                    <p>site: <a href="/index.html">marionette</a></p>
+                </div>
+                
+                <!--add as many paragraphs as you want, the sidebar is scrollable!-->                
+            </section>
+        </div>
+        
+        <!--add links to other pages on your site, or other sites you're on!-->
+        <nav>
+        <ul>
+            <li><a href="index.html"> home </a></li>
+            <li><a href="https://www.tumblr.com/blog/lycorislazulii"> my tumblr </a></li>
+        </ul>
+        </nav>
+        
+        <!--i made it so the stamps section here only shows up on desktop-->
+<section id="stamps" class="center pc-only">
+
+<style>
+#stamps img {
+  width: 150px;
+  height: auto;
+  margin: 4px;
+  filter: grayscale(93%);
+  transition: filter 0.2s ease;
+}
+
+#stamps img:hover {
+  filter: grayscale(0%);
+}
+</style>
+
+<img src="/blinkies/0genders.webp" alt="0genders blinkie">
+<img src="/blinkies/addictedpc.webp" alt="addictedpc blinkie">
+<img src="/blinkies/analog.webp" alt="analog blinkie">
+<img src="/blinkies/animeluvr.webp" alt="animeluvr blinkie">
+<img src="/blinkies/clickclick.webp" alt="clickclick blinkie">
+<img src="/blinkies/depression.webp" alt="depression blinkie">
+<img src="/blinkies/fanficfanatic.webp" alt="fanficfanatic blinkie">
+<img src="/blinkies/gamer.webp" alt="gamer blinkie">
+<img src="/blinkies/godbless.webp" alt="godbless blinkie">
+<img src="/blinkies/internetangel.webp" alt="internetangel blinkie">
+<img src="/blinkies/iphone.webp" alt="iphone blinkie">
+<img src="/blinkies/killai.webp" alt="killai blinkie">
+<img src="/blinkies/malpractice.webp" alt="malpractice blinkie">
+<img src="/blinkies/mourninglambs.webp" alt="mourninglambs blinkie">
+<img src="/blinkies/sadistic.webp" alt="sadistic blinkie">
+<img src="/blinkies/talkingself.webp" alt="talkingself blinkie">
+<img src="/blinkies/tomodachi.webp" alt="tomodachi blinkie">
+
+</section>
+
+        
+        <!--feel free to remove the credit or put it somewhere else, i don't mind!-->
+        <p class="center small-text">blog template by <a href="https://nomnomnami.com">NomnomNami</a></p>
+        
+    </aside>
+    
+    <!--now for the POSTS! the "tagged" class makes sure the tag filters do what they're supposed to-->
+    <main class="tagged">
+        
+        <!--first is a deviantart inspired "current status" section where you can list things you're currently up to-->
+        <section id="status" class="pinned">
+            <!--remove the "open" part to have this closed by default-->
+            <details open>
+                <!--i like to include a last updated date for this part-->
+<summary>status <time id="status-date"></time></summary>
+<ul>
+  <li>feeling: <span id="mood-status"></span></li>
+  <li>tea of the day: <a id="tea-link" href="#" target="_blank" rel="noopener noreferrer"><span id="tea-name"></span></a></li>
+
+  <li>blog last updated</li>
+<li id="last-updated"></li>
+</ul>
+            </details>
+        </section>
+        
+        <section id="tag-filters" class="pinned">
+            <details open>
+                <summary>tag filters</summary>
+                <!--when you add new tags here, make sure to add them to your css as well so that the filters will work properly. careful not to make any typos...!-->
+                <label><input type="radio" id="all" name="tag" checked>all</label>
+                <label><input type="radio" id="intro" name="tag">#vent</label>
+                <label><input type="radio" id="personal" name="tag">#hobbies</label>
+                <label><input type="radio" id="art" name="tag">#thoughts</label>
+                <label><input type="radio" id="secret" name="tag">#relationships</label>
+            </details>
+        </section>
+        
+<!--BEGIN POSTING!!!!!!!!-->
+        
+        <!--each post should use the "article" element. set its class to "post", and add any tags that you use with spaces separating them. this is how it knows which posts to filter when you click the buttons above!-->
+        
+        <!--a simple art post! check my periwinkle template for making photo-set style posts...-->
+        
+        <!--one last simple post. i always copypaste whatever i posted last when i write a new post, so i made a variety you can do that with too!-->
+        <article class="post intro">
+            <div class="post-header">@pastille <time datetime="2015-10-31T11:27">10/31/2015, 11:27am</time></div>
+            
+            <p>first post! i don't know what to blog about, though... what do people usually post on here?</p>
+            
+            <img src="images/photo2.png" alt="pastille, confused">
+            
+            <section class="tags">
+                <a href="#intro">#introduction</a>
+            </section>
+        </article>
+        
+        <!--this button brings you back to the top of the page, like it says-->
+        <section id="page-nav">
+            <p class="center"><a href="#">back to top</a></p>
+        </section>
+        
+    </main>
+
+    <footer>
+      © 2026 amane higanbana
+    </footer>      
+    </div>
+    </div>
+    <script>
+  const moods = [
+    "happy",
+    "sad",
+    "bored",
+    "tired",
+    "sleepy",
+    "motivated",
+    "anxious",
+    "peaceful",
+    "frustrated",
+    "excited"
+  ];
+
+  const teas = [
+    { name: "matcha", url: "https://en.wikipedia.org/wiki/Matcha" },
+    { name: "earl gray tea", url: "https://en.wikipedia.org/wiki/Earl_Grey_tea" },
+    { name: "chamomile tea", url: "https://en.wikipedia.org/wiki/Chamomile_tea" },
+    { name: "jasmine tea", url: "https://en.wikipedia.org/wiki/Jasmine_tea" },
+    { name: "oolong", url: "https://en.wikipedia.org/wiki/Oolong" },
+    { name: "chai", url: "https://en.wikipedia.org/wiki/Chai" },
+    { name: "peppermint tea", url: "https://en.wikipedia.org/wiki/Peppermint_tea" },
+    { name: "sencha", url: "https://en.wikipedia.org/wiki/Sencha" },
+    { name: "pu-erh tea", url: "https://en.wikipedia.org/wiki/Pu-erh_tea" }
+  ];
+
+  function dayIndex(length) {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now - start;
+    const oneDay = 1000 * 60 * 60 * 24;
+    return Math.floor(diff / oneDay) % length;
+  }
+
+  const mood = moods[dayIndex(moods.length)];
+  const tea = teas[dayIndex(teas.length)];
+
+  document.getElementById("mood-status").textContent = mood;
+  const teaName = document.getElementById("tea-name");
+  const teaLink = document.getElementById("tea-link");
+  teaName.textContent = tea.name;
+  teaLink.href = tea.url;
+</script>
+
+<script>
+  function formatDate(date) {
+    return date.toLocaleDateString("en-GB"); // gives DD/MM/YYYY
+  }
+
+  // --- STATUS DATE (today) ---
+  const today = new Date();
+  document.getElementById("status-date").textContent = formatDate(today);
+
+  // --- BLOG LAST UPDATED ---
+  const timeElements = document.querySelectorAll(".post time[datetime]");
+  let latestDate = null;
+
+  timeElements.forEach(el => {
+    const date = new Date(el.getAttribute("datetime"));
+    if (!latestDate || date > latestDate) {
+      latestDate = date;
+    }
+  });
+
+  if (latestDate) {
+    document.getElementById("last-updated").textContent = formatDate(latestDate);
+  }
+</script>
+  </body>
+</html>

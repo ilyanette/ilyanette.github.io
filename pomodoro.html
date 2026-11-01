@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>my pomodoro timer pls do not use</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' fill='%23000'/%3E%3Crect x='2' y='2' width='4' height='4' fill='%23f3cfd9'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=IM+Fell+DW+Pica&display=swap" rel="stylesheet">
+<style>
+:root{--pk:#f3cfd9;--dim:rgba(243,207,217,.42);--faint:rgba(243,207,217,.12);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{height:100%;background:#000;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:#000;color:var(--pk);display:flex;align-items:center;justify-content:center;font-family:"IM Fell DW Pica",Georgia,serif;overflow-x:hidden}
+main{width:min(680px,100%);padding:24px 20px}
+.px{font-family:"DotGothic16","Courier New",monospace}
+.top{display:flex;justify-content:space-between;font-size:18px;color:var(--dim)}
+#st::before{content:"";display:inline-block;width:.55em;height:.55em;margin-right:.55em;background:var(--dim)}
+#st.rec{color:var(--pk)}
+#st.rec::before{background:var(--pk);animation:bl 1.2s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.finder{position:relative;margin-top:18px;padding:44px 12px;text-align:center}
+.finder i{position:absolute;width:26px;height:26px;border:0 solid var(--pk)}
+.finder i:nth-of-type(1){top:0;left:0;border-width:2px 0 0 2px}
+.finder i:nth-of-type(2){top:0;right:0;border-width:2px 2px 0 0}
+.finder i:nth-of-type(3){bottom:0;left:0;border-width:0 0 2px 2px}
+.finder i:nth-of-type(4){bottom:0;right:0;border-width:0 2px 2px 0}
+#time{font-size:clamp(76px,24vw,190px);line-height:1;letter-spacing:.02em;text-shadow:4px 0 0 rgba(243,207,217,.22);animation:fl 8s steps(1) infinite}
+@keyframes fl{0%,100%{opacity:1;transform:none}91%{opacity:.5}92%{opacity:1;transform:translateX(7px)}93%{opacity:.7;transform:translateX(-5px)}94%{opacity:1;transform:none}}
+#bar{display:flex;gap:4px;height:16px;margin:28px 0 40px}
+#bar i{flex:1;background:var(--pk)}
+#bar i.off{background:var(--faint)}
+.bot{display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.bot div{display:flex;flex-direction:column;align-items:flex-start}
+.bot div+div{align-items:flex-end}
+button{font:inherit;font-size:clamp(22px,5.5vw,28px);color:var(--dim);background:none;border:0;padding:5px 0;cursor:pointer;display:flex;align-items:center;-webkit-tap-highlight-color:transparent}
+button::before{content:"";width:.4em;height:.4em;margin-right:.6em;background:transparent;flex:none}
+button.on,button:hover{color:var(--pk)}
+button.on::before,button:hover::before{background:var(--pk)}
+button:focus-visible{outline:1px dotted var(--pk);outline-offset:3px}
+#n,#sl,#bd{position:fixed;pointer-events:none}
+#n{inset:0;width:100%;height:100%;image-rendering:pixelated}
+#sl{inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='3'%3E%3Crect y='2' width='2' height='1' fill='black' fill-opacity='.5'/%3E%3C/svg%3E")}
+#bd{left:0;right:0;height:16px;background:rgba(243,207,217,.05);animation:bd 11s linear infinite}
+@keyframes bd{from{top:-20px}to{top:100%}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top px"><span id="st">STBY</span><span id="ses">Session 1 of 4</span></div>
+  <div class="finder"><i></i><i></i><i></i><i></i><div id="time" class="px" role="timer">20:00</div></div>
+  <div id="bar"></div>
+  <div class="bot">
+    <div><button data-m="focus">Focus</button><button data-m="short">Short break</button><button data-m="long">Long break</button></div>
+    <div><button id="go">Start</button><button id="rs">Reset</button></div>
+  </div>
+</main>
+<div id="bd"></div><canvas id="n" width="320" height="240"></canvas><div id="sl"></div>
+<script>
+const D={focus:1200,short:480,long:900},$=id=>document.getElementById(id);
+const bar=$('bar');for(let i=0;i<20;i++)bar.appendChild(document.createElement('i'));
+let mode='focus',left=D.focus,run=false,end=0,done=0,iv,ac;
+const fmt=s=>{s=Math.max(0,Math.ceil(s));return String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+
+function draw(){
+  $('time').textContent=fmt(left);
+  const s=$('st');s.className=run?'rec':'';
+  s.textContent=run?'REC':left<D[mode]?'PAUSE':'STBY';
+  $('ses').textContent='Session '+Math.max(1,mode==='focus'?done+1:done)+' of 4';
+  $('go').textContent=run?'Pause':'Start';
+  const k=Math.ceil(left/D[mode]*20);
+  [...bar.children].forEach((b,i)=>b.className=i<k?'':'off');
+  document.querySelectorAll('[data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===mode));
+  document.title=(run?fmt(left)+' ':'')+'Pomodoro';
+}
+function tick(){left=(end-Date.now())/1000;left<=0?finish():draw()}
+function pause(){run=false;clearInterval(iv)}
+function start(){
+  if(run){left=Math.max(0,(end-Date.now())/1000);pause();draw();return}
+  try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}
+  run=true;end=Date.now()+left*1000;iv=setInterval(tick,200);draw();
+}
+function set(m){pause();mode=m;left=D[m];draw()}
+function finish(){
+  pause();beep();
+  if(mode==='focus'){done++;set(done>=4?'long':'short')}
+  else{if(mode==='long')done=0;set('focus')}
+}
+function beep(){
+  if(!ac)return;
+  [0,.4,.8].forEach(t=>{const o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=196;g.gain.value=.05;o.connect(g);g.connect(ac.destination);o.start(ac.currentTime+t);o.stop(ac.currentTime+t+.22)});
+}
+
+$('go').onclick=start;
+$('rs').onclick=()=>set(mode);
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>set(b.dataset.m));
+addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='BUTTON'){e.preventDefault();start()}});
+
+const c=$('n').getContext('2d');
+function noise(){
+  const d=c.createImageData(320,240),p=d.data;
+  for(let i=0;i<p.length;i+=4)if(Math.random()<.2){p[i]=243;p[i+1]=207;p[i+2]=217;p[i+3]=Math.random()*60}
+  c.putImageData(d,0,0);
+}
+noise();
+if(!matchMedia('(prefers-reduced-motion:reduce)').matches)setInterval(noise,110);
+draw();
+</script>
+</body>
+</html>
