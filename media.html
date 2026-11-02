@@ -188,11 +188,17 @@ body::before {
       border-bottom: none;
     }
 
-    .review img {
-      width: 80px;
-      height: auto;
-      align-self: flex-start;
-    }
+.review img {
+  width: 80px;
+  height: auto;
+  align-self: flex-start;
+  filter: grayscale(97%);
+  transition: filter 0.2s ease;
+}
+
+.review img:hover {
+  filter: grayscale(0%);
+}
 
     .review-content {
       flex: 1;
