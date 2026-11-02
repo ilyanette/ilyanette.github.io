@@ -109,6 +109,18 @@ body::before {
     .fav-grid.poster img   { aspect-ratio: 2 / 3; }
     .fav-grid.square img   { aspect-ratio: 1 / 1; }
 
+    .fav-grid.bw img {
+      filter: grayscale(97%);
+    }
+
+    .fav-item img {
+      transition: filter 0.2s ease;
+    }
+
+    .fav-grid.bw .fav-item:hover img {
+      filter: grayscale(0%);
+    }
+
     .fav-item:hover {
       transform: rotate(-3deg) scale(1.1);
       z-index: 1;
@@ -482,7 +494,7 @@ body::before {
         ]
       },
       games: {
-        layout: "cols-2 poster",
+        layout: "cols-2 poster bw",
         items: [
           { name: "metal gear solid 2", img: "faveimages/mgs2.jpg",         url: "https://en.wikipedia.org/wiki/Metal_Gear_Solid_2:_Sons_of_Liberty" },
           { name: "death stranding", img: "faveimages/deathstranding.jpg",         url: "https://en.wikipedia.org/wiki/Death_Stranding" },
@@ -493,7 +505,7 @@ body::before {
         ]
       },
       movies: {
-        layout: "cols-2 poster",
+        layout: "cols-2 poster bw",
         items: [
           { name: "the dark knight rises",    img: ph("Superman", 300, 450),      url: "https://letterboxd.com/film/superman-2025/" },
           { name: "mishima : a life in four chapters",        img: ph("The Descent", 300, 450),   url: "https://letterboxd.com/film/the-descent/" },
@@ -505,7 +517,7 @@ body::before {
         ]
       },
       books: {
-        layout: "cols-2 poster",
+        layout: "cols-2 poster bw",
         items: [
           { name: "the forgotten beasts of eld",                       img: ph("Mossflower", 300, 450),       url: "https://www.goodreads.com/book/show/201341.Mossflower" },
           { name: "hogg",      img: ph("Forgotten Beasts", 300, 450), url: "https://www.goodreads.com/book/show/81069.The_Forgotten_Beasts_of_Eld" },
