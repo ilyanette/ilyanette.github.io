@@ -83,11 +83,10 @@ body::before {
     }
 
     .fav-item img {
-      display: block;
-      width: 100%;
-      object-fit: cover;
-      border: 2px solid black;
-      background: white;
+  aspect-ratio: auto;      /* stop forcing a 3:4 box */
+  object-fit: contain;     /* never crop */
+  border: none;
+  background: none;
     }
 
     .fav-grid.portrait img { aspect-ratio: 3 / 4; }
@@ -452,17 +451,17 @@ body::before {
         items: [
           { name: "alucard",     img: "faveimages/alucard.png",  url: "https://castlevania.fandom.com/wiki/Alucard" },
           { name: "liquid snake",          img: "faveimages/liquid.png",       url: "https://metalgear.fandom.com/wiki/Liquid_Snake" },
-          { name: "revolver ocelot", img: ph("Ocelot", 300, 400),       url: "https://metalgear.fandom.com/wiki/Revolver_Ocelot" },
-          { name: "wanderer",          img: ph("Otacon", 300, 400),       url: "https://genshin-impact.fandom.com/wiki/Wanderer" },
-          { name: "suguru geto",        img: ph("The Boss", 300, 400),     url: "https://jujutsu-kaisen.fandom.com/wiki/Suguru_Geto" },
-          { name: "higgs monaghan",    img: ph("Liquid Snake", 300, 400), url: "https://deathstranding.fandom.com/wiki/Higgs_Monaghan" },
-          { name: "amelie",    img: ph("Liquid Snake", 300, 400), url: "https://deathstranding.fandom.com/wiki/Amelie" },
-          { name: "angela",    img: ph("Liquid Snake", 300, 400), url: "https://library-of-ruina.fandom.com/wiki/Angela" },
-          { name: "beatrice",    img: ph("Liquid Snake", 300, 400), url: "https://07th-expansion.fandom.com/wiki/Beatrice" },
-          { name: "sephiroth crescent",    img: ph("Liquid Snake", 300, 400), url: "https://finalfantasy.fandom.com/wiki/Sephiroth" },
-          { name: "aerith gainsborough",    img: ph("Liquid Snake", 300, 400), url: "https://finalfantasy.fandom.com/wiki/Aerith_Gainsborough" },
-          { name: "cecil harvey",    img: ph("Liquid Snake", 300, 400), url: "https://finalfantasy.fandom.com/wiki/Cecil_Harvey" },
-          { name: "denia",    img: ph("Liquid Snake", 300, 400), url: "https://wutheringwaves.fandom.com/wiki/Denia" }
+          { name: "revolver ocelot", img: "faveimages/revolver.png",       url: "https://metalgear.fandom.com/wiki/Revolver_Ocelot" },
+          { name: "wanderer",          img: "faveimages/wanderer.png",       url: "https://genshin-impact.fandom.com/wiki/Wanderer" },
+          { name: "suguru geto",        img: "faveimages/geto.png",     url: "https://jujutsu-kaisen.fandom.com/wiki/Suguru_Geto" },
+          { name: "higgs monaghan",    img: "faveimages/higgs.png", url: "https://deathstranding.fandom.com/wiki/Higgs_Monaghan" },
+          { name: "amelie",    img: "faveimages/amelie.png", url: "https://deathstranding.fandom.com/wiki/Amelie" },
+          { name: "angela",    img: "faveimages/angela.png", url: "https://library-of-ruina.fandom.com/wiki/Angela" },
+          { name: "beatrice",    img: "faveimages/beato.png", url: "https://07th-expansion.fandom.com/wiki/Beatrice" },
+          { name: "sephiroth crescent",    img: "faveimages/sephiroth.png", url: "https://finalfantasy.fandom.com/wiki/Sephiroth" },
+          { name: "aerith gainsborough",    img: "faveimages/aerith.png", url: "https://finalfantasy.fandom.com/wiki/Aerith_Gainsborough" },
+          { name: "cecil harvey",    img: "faveimages/cecil.png", url: "https://finalfantasy.fandom.com/wiki/Cecil_Harvey" },
+          { name: "denia",    img: "faveimages/denia.png", url: "https://wutheringwaves.fandom.com/wiki/Denia" }
         ]
       },
       games: {
