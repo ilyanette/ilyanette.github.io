@@ -4,19 +4,25 @@
   <meta charset="UTF-8">
   <title>medialog</title>
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      background: url("cybersigilangel.jpg");
-      font-family: serif;
-      color: black;
-    }
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  font-family: serif;
+  color: black;
+  position: relative;
+}
 
 body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background-image: url('cybersigilangel.jpg');
   background-size: cover;
   background-position: center;
