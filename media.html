@@ -7,15 +7,12 @@
 
     @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Sorts+Mill+Goudy:ital@0;1&display=swap');
 
-    /* ---------- palette (shared with the main page) ---------- */
+    /* ---------- palette: black, white, and pink only on hover ---------- */
     :root {
-      --ink: #2c324a;
-      --link: #3d4a78;
-      --hover: #1e2440;
-      --accent: #E89EB8;
-      --rule: rgba(60, 70, 110, 0.4);
-      --rule-strong: rgba(60, 70, 110, 0.7);
-      --glow: rgba(150, 175, 235, 0.85);
+      --ink: #000;
+      --pink: #E89EB8;
+      --rule: rgba(0, 0, 0, 0.4);
+      --glow: rgba(232, 158, 184, 0.85);
     }
 
     * {
@@ -29,7 +26,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 28px;
+      gap: 0;
       font-family: 'Sorts Mill Goudy', serif;
       font-size: 0.95rem;
       color: var(--ink);
@@ -59,18 +56,14 @@
     }
 
     a, a:link, a:visited {
-      color: var(--link);
+      color: var(--ink);
       text-decoration: none;
       border-bottom: 1px dashed var(--rule);
     }
 
-    a:hover, a:focus {
-      color: var(--accent);
-      border-bottom-color: var(--rule-strong);
-    }
-
-    a:active {
-      color: var(--hover);
+    a:hover, a:focus-visible {
+      color: var(--pink);
+      border-bottom-color: var(--pink);
     }
 
     /* image links don't get the dashed underline */
@@ -85,7 +78,7 @@
       z-index: 0;
       background: rgba(255, 255, 255, 0.94);
       border-radius: 8px;
-      box-shadow: 0 8px 20px rgba(8, 8, 12, 0.55);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
       box-sizing: border-box;
       font-size: 1.04rem;
       line-height: 1.4;
@@ -100,7 +93,7 @@
       background-image: url("whitelace.png");
       background-repeat: repeat;
       background-size: 40px 40px;
-      filter: blur(0.2px) drop-shadow(0 2px 8px rgba(170, 170, 200, 0.06));
+      filter: blur(0.2px) drop-shadow(0 2px 8px rgba(170, 170, 170, 0.06));
       border-radius: 10px;
     }
 
@@ -113,14 +106,22 @@
       letter-spacing: 1px;
     }
 
-    /* ---------- favorites ---------- */
+    /* ---------- favorites (attached to the left side of medialog) ---------- */
     #favorites {
+      z-index: 1;
       width: 280px;
       height: 500px;
       padding: 16px 0 0;
       text-align: center;
       display: flex;
       flex-direction: column;
+      border-radius: 8px 0 0 8px;
+      border-right: 3px double var(--rule);   /* the seam between the two panels */
+      clip-path: inset(-40px 0 -40px -40px);  /* stops its shadow and lace spilling onto medialog */
+    }
+
+    #favorites::before {
+      border-radius: 10px 0 0 10px;
     }
 
     .selector {
@@ -133,25 +134,18 @@
       padding: 0 6px;
       font-family: inherit;
       font-size: 1.2em;
-      color: var(--link);
+      color: var(--ink);
       transition: color 0.2s ease, transform 0.2s ease;
     }
 
     .selector button:hover {
-      color: var(--accent);
+      color: var(--pink);
       transform: scale(1.2);
-    }
-
-    .selector button:active {
-      color: var(--hover);
     }
 
     #category {
       display: inline-block;
-      min-width: 8em;
-      font-family: 'Cinzel Decorative', cursive;
-      font-size: 0.95em;
-      letter-spacing: 1px;
+      min-width: 5.5em;
     }
 
     /* favorites grid */
@@ -160,7 +154,7 @@
       min-height: 0;
       overflow-y: auto;
       padding: 14px 12px;
-      border-top: 3px double rgba(60, 70, 110, 0.45);
+      border-top: 3px double var(--rule);
     }
 
     .fav-grid {
@@ -240,7 +234,7 @@
       flex: 1;
       display: flex;
       min-height: 0; /* lets the review list scroll instead of growing the box */
-      border-top: 3px double rgba(60, 70, 110, 0.45);
+      border-top: 3px double var(--rule);
     }
 
     #review-list {
@@ -254,7 +248,7 @@
     #filter {
       width: 180px;
       padding: 14px 16px 16px;
-      border-left: 3px double rgba(60, 70, 110, 0.45);
+      border-left: 3px double var(--rule);
       box-sizing: border-box;
       overflow-y: auto;
     }
@@ -278,17 +272,17 @@
       font-size: 0.95em;
       color: var(--ink);
       background-color: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(60, 70, 110, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
       border-radius: 4px;
       padding: 5px 8px;
       outline: none;
-      box-shadow: inset 0 1px 3px rgba(44, 50, 74, 0.15);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     #filter input::placeholder {
       font-style: italic;
-      color: rgba(44, 50, 74, 0.5);
+      color: #777;
     }
 
     #filter select {
@@ -298,7 +292,7 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='%232c324a'/></svg>");
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='black'/></svg>");
       background-repeat: no-repeat;
       background-position: right 8px center;
       background-size: 8px 5px;
@@ -306,10 +300,10 @@
 
     #filter input:hover,
     #filter select:hover,
-    #filter input:focus,
-    #filter select:focus {
-      border-color: var(--link);
-      box-shadow: inset 0 1px 3px rgba(44, 50, 74, 0.15), 0 0 6px var(--glow);
+    #filter input:focus-visible,
+    #filter select:focus-visible {
+      border-color: var(--pink);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 6px var(--glow);
     }
 
     #filter label {
@@ -323,7 +317,7 @@
     #stats {
       margin-top: 18px;
       padding-top: 12px;
-      border-top: 3px double rgba(60, 70, 110, 0.45);
+      border-top: 3px double var(--rule);
       text-align: center;
     }
 
@@ -347,10 +341,10 @@
 
     .progress {
       height: 14px;
-      border: 1px solid rgba(60, 70, 110, 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.5);
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.8);
-      box-shadow: inset 0 1px 3px rgba(44, 50, 74, 0.2);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
       padding: 2px;
       box-sizing: border-box;
     }
@@ -359,7 +353,7 @@
       height: 100%;
       width: 0;
       border-radius: 2px;
-      background: var(--link);
+      background: #000;
       transition: width 0.4s ease;
     }
 
@@ -369,7 +363,6 @@
     }
 
     .stat-number {
-      font-family: 'Cinzel Decorative', cursive;
       font-size: 1.4em;
       line-height: 1.1;
     }
@@ -394,7 +387,7 @@
       box-sizing: border-box;
       padding: 3px;
       background: #fff;
-      border: 1px solid rgba(60, 70, 110, 0.4);
+      border: 1px solid rgba(0, 0, 0, 0.4);
       filter: saturate(0.1) drop-shadow(0 0 0 transparent);
       transition: filter 0.3s ease;
     }
@@ -409,11 +402,7 @@
 
     .review-content h3 {
       margin: 0 0 5px;
-      font-family: 'Cinzel Decorative', cursive;
-      font-size: 1.08rem;
-      font-weight: normal;
-      letter-spacing: 0.4px;
-      line-height: 1.25;
+      font-weight: bold;
     }
 
     .review-content p {
@@ -428,28 +417,19 @@
       margin-top: 5px;
       font-family: inherit;
       font-size: 1em;
-      color: var(--link);
+      color: var(--ink);
       transition: color 0.2s ease, border-color 0.2s ease;
     }
 
     .toggle-btn:hover,
-    .toggle-btn:focus {
-      color: var(--accent);
-      border-bottom-color: var(--rule-strong);
-    }
-
-    .toggle-btn:active {
-      color: var(--hover);
+    .toggle-btn:focus-visible {
+      color: var(--pink);
+      border-bottom-color: var(--pink);
     }
 
     .review-content .review-text {
       display: none;
       margin-top: 8px;
-      padding: 8px 10px;
-      line-height: 1.5;
-      background: rgba(60, 70, 110, 0.05);
-      border: 1px dashed rgba(60, 70, 110, 0.3);
-      border-radius: 6px;
     }
 
     #no-results {
@@ -463,7 +443,7 @@
     #review-list,
     #filter {
       scrollbar-width: thin;
-      scrollbar-color: rgba(60, 70, 110, 0.35) transparent;
+      scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     }
 
     #fav-area::-webkit-scrollbar,
@@ -475,7 +455,7 @@
     #fav-area::-webkit-scrollbar-thumb,
     #review-list::-webkit-scrollbar-thumb,
     #filter::-webkit-scrollbar-thumb {
-      background-color: rgba(60, 70, 110, 0.35);
+      background-color: rgba(0, 0, 0, 0.3);
       border-radius: 3px;
     }
   </style>
@@ -795,102 +775,4 @@
       },
     };
 
-    // favorites category selector
-    const categories = Object.keys(favorites);
-    let index = 0;
-    const label = document.getElementById("category");
-    const favGrid = document.getElementById("fav-grid");
-
-    function showCategory() {
-      const cat = favorites[categories[index]];
-      label.textContent = categories[index];
-      favGrid.className = "fav-grid " + cat.layout;
-      favGrid.innerHTML = cat.items.map(item => `
-        <a class="fav-item" href="${item.url}" target="_blank" title="${item.name}">
-          <img src="${item.img}" alt="${item.name}">
-        </a>
-      `).join("");
-      document.getElementById("fav-area").scrollTop = 0;
-    }
-
-    document.getElementById("prev").onclick = () => {
-      index = (index - 1 + categories.length) % categories.length;
-      showCategory();
-    };
-
-    document.getElementById("next").onclick = () => {
-      index = (index + 1) % categories.length;
-      showCategory();
-    };
-
-    showCategory();
-
-    // expandable reviews
-    function toggleReview(button) {
-      const review = button.nextElementSibling;
-      if (!review) return;
-      const open = review.style.display === "block";
-      review.style.display = open ? "none" : "block";
-      button.textContent = open ? "read review" : "hide review";
-    }
-
-    // search + filters (all update live as you type / change)
-    function applyFilters() {
-      const searchTerm = document.getElementById("searchBar").value.toLowerCase().trim();
-      const typeFilter = document.getElementById("typeFilter").value;
-      const starsFilter = document.getElementById("starsFilter").value;
-      const yearFilter = document.getElementById("yearFilter").value;
-
-      let shown = 0;
-
-      document.querySelectorAll(".review").forEach(item => {
-        const title = item.querySelector("h3").textContent.toLowerCase();
-        const year = item.dataset.date.slice(0, 4);
-
-        const matches =
-          (!searchTerm || title.includes(searchTerm)) &&
-          (typeFilter === "all" || item.dataset.type === typeFilter) &&
-          (starsFilter === "all" || item.dataset.stars === starsFilter) &&
-          (yearFilter === "all" || year === yearFilter);
-
-        item.style.display = matches ? "flex" : "none";
-        if (matches) shown++;
-      });
-
-      document.getElementById("no-results").style.display = shown ? "none" : "block";
-    }
-
-    document.getElementById("searchBar").addEventListener("input", applyFilters);
-    ["typeFilter", "starsFilter", "yearFilter"].forEach(id =>
-      document.getElementById(id).addEventListener("change", applyFilters)
-    );
-
-    // yearly stats (counted from the reviews on the page, current year only)
-    const BOOK_GOAL = 50;
-
-    function updateStats() {
-      const year = String(new Date().getFullYear());
-      const counts = { book: 0, game: 0, movie: 0 };
-
-      document.querySelectorAll(".review").forEach(item => {
-        if (item.dataset.date.slice(0, 4) === year && counts[item.dataset.type] !== undefined) {
-          counts[item.dataset.type]++;
-        }
-      });
-
-      document.getElementById("stats-title").textContent = year + " stats";
-
-      // bar caps at 100% once the goal is hit, but the count keeps going
-      const pct = Math.min(counts.book / BOOK_GOAL, 1) * 100;
-      document.getElementById("booksBar").style.width = pct + "%";
-      document.getElementById("booksCount").textContent = counts.book + " / " + BOOK_GOAL;
-
-      document.getElementById("gamesCount").textContent = counts.game;
-      document.getElementById("moviesCount").textContent = counts.movie;
-    }
-
-    updateStats();
-  </script>
-
-</body>
-</html>
+    // favorites category
