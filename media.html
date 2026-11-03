@@ -134,7 +134,7 @@ body::before {
     }
 
     #reviews {
-      width: 600px;
+      width: 640px;
       height: 700px;
       display: flex;
       flex-direction: column;
@@ -159,23 +159,124 @@ body::before {
       min-height: 0;
     }
 
+    /* ---------- filter sidebar ---------- */
     #filter {
-      width: 150px;
-      padding: 20px;
+      width: 180px;
+      padding: 16px 16px 20px;
       border-left: 2px solid black;
       box-sizing: border-box;
       overflow-y: auto;
+    }
+
+    .panel-title {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 0.95em;
+      font-weight: normal;
+      text-align: center;
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dotted black;
+      letter-spacing: 0.5px;
     }
 
     #filter input,
     #filter select {
       width: 100%;
       box-sizing: border-box;
+      font-family: inherit;
+      font-size: 0.95em;
+      color: black;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid black;
+      border-radius: 0;
+      padding: 5px 8px;
+      outline: none;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    #filter input::placeholder {
+      font-style: italic;
+      color: #777;
+    }
+
+    #filter select {
+      display: block;
+      margin-top: 4px;
+      padding-right: 24px;
+      cursor: pointer;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='black'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 8px 5px;
+    }
+
+    #filter input:hover,
+    #filter select:hover,
+    #filter input:focus,
+    #filter select:focus {
+      box-shadow: 2px 2px 0 black;
+      transform: translate(-1px, -1px);
     }
 
     #filter label {
       display: block;
-      margin-top: 10px;
+      margin-top: 12px;
+      font-size: 0.9em;
+      letter-spacing: 0.3px;
+    }
+
+    /* ---------- stats ---------- */
+    #stats {
+      margin-top: 22px;
+      padding-top: 14px;
+      border-top: 2px solid black;
+      text-align: center;
+    }
+
+    #stats .panel-title {
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      margin-bottom: 14px;
+    }
+
+    .stat:last-child {
+      margin-bottom: 0;
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .progress {
+      height: 14px;
+      border: 1px solid black;
+      background: white;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: black;
+      transition: width 0.4s ease;
+    }
+
+    .stat-count {
+      margin-top: 4px;
+      font-size: 1.05em;
+    }
+
+    .stat-number {
+      font-size: 1.4em;
+      line-height: 1.1;
     }
 
     /* review entries (plain) */
@@ -444,6 +545,8 @@ body::before {
       </div>
 
       <div id="filter">
+        <h3 class="panel-title">filters</h3>
+
         <input type="text" id="searchBar" placeholder="search reviews">
 
         <label>type
@@ -474,6 +577,29 @@ body::before {
             <option value="2026">2026</option>
           </select>
         </label>
+
+        <!-- yearly stats -->
+        <div id="stats">
+          <h3 class="panel-title" id="stats-title">stats</h3>
+
+          <div class="stat">
+            <div class="stat-label">books read</div>
+            <div class="progress">
+              <div class="progress-fill" id="booksBar"></div>
+            </div>
+            <div class="stat-count" id="booksCount">0 / 50</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-label">games played</div>
+            <div class="stat-number" id="gamesCount">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-label">movies watched</div>
+            <div class="stat-number" id="moviesCount">0</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -596,6 +722,32 @@ body::before {
     ["typeFilter", "starsFilter", "yearFilter"].forEach(id =>
       document.getElementById(id).addEventListener("change", applyFilters)
     );
+
+    // yearly stats (counted from the reviews on the page, current year only)
+    const BOOK_GOAL = 50;
+
+    function updateStats() {
+      const year = String(new Date().getFullYear());
+      const counts = { book: 0, game: 0, movie: 0 };
+
+      document.querySelectorAll(".review").forEach(item => {
+        if (item.dataset.date.slice(0, 4) === year && counts[item.dataset.type] !== undefined) {
+          counts[item.dataset.type]++;
+        }
+      });
+
+      document.getElementById("stats-title").textContent = year + " stats";
+
+      // bar caps at 100% once the goal is hit, but the count keeps going
+      const pct = Math.min(counts.book / BOOK_GOAL, 1) * 100;
+      document.getElementById("booksBar").style.width = pct + "%";
+      document.getElementById("booksCount").textContent = counts.book + " / " + BOOK_GOAL;
+
+      document.getElementById("gamesCount").textContent = counts.game;
+      document.getElementById("moviesCount").textContent = counts.movie;
+    }
+
+    updateStats();
   </script>
 
 </body>
