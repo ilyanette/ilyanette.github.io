@@ -775,4 +775,102 @@
       },
     };
 
-    // favorites category
+    // favorites category selector
+    const categories = Object.keys(favorites);
+    let index = 0;
+    const label = document.getElementById("category");
+    const favGrid = document.getElementById("fav-grid");
+
+    function showCategory() {
+      const cat = favorites[categories[index]];
+      label.textContent = categories[index];
+      favGrid.className = "fav-grid " + cat.layout;
+      favGrid.innerHTML = cat.items.map(item => `
+        <a class="fav-item" href="${item.url}" target="_blank" title="${item.name}">
+          <img src="${item.img}" alt="${item.name}">
+        </a>
+      `).join("");
+      document.getElementById("fav-area").scrollTop = 0;
+    }
+
+    document.getElementById("prev").onclick = () => {
+      index = (index - 1 + categories.length) % categories.length;
+      showCategory();
+    };
+
+    document.getElementById("next").onclick = () => {
+      index = (index + 1) % categories.length;
+      showCategory();
+    };
+
+    showCategory();
+
+    // expandable reviews
+    function toggleReview(button) {
+      const review = button.nextElementSibling;
+      if (!review) return;
+      const open = review.style.display === "block";
+      review.style.display = open ? "none" : "block";
+      button.textContent = open ? "read review" : "hide review";
+    }
+
+    // search + filters (all update live as you type / change)
+    function applyFilters() {
+      const searchTerm = document.getElementById("searchBar").value.toLowerCase().trim();
+      const typeFilter = document.getElementById("typeFilter").value;
+      const starsFilter = document.getElementById("starsFilter").value;
+      const yearFilter = document.getElementById("yearFilter").value;
+
+      let shown = 0;
+
+      document.querySelectorAll(".review").forEach(item => {
+        const title = item.querySelector("h3").textContent.toLowerCase();
+        const year = item.dataset.date.slice(0, 4);
+
+        const matches =
+          (!searchTerm || title.includes(searchTerm)) &&
+          (typeFilter === "all" || item.dataset.type === typeFilter) &&
+          (starsFilter === "all" || item.dataset.stars === starsFilter) &&
+          (yearFilter === "all" || year === yearFilter);
+
+        item.style.display = matches ? "flex" : "none";
+        if (matches) shown++;
+      });
+
+      document.getElementById("no-results").style.display = shown ? "none" : "block";
+    }
+
+    document.getElementById("searchBar").addEventListener("input", applyFilters);
+    ["typeFilter", "starsFilter", "yearFilter"].forEach(id =>
+      document.getElementById(id).addEventListener("change", applyFilters)
+    );
+
+    // yearly stats (counted from the reviews on the page, current year only)
+    const BOOK_GOAL = 50;
+
+    function updateStats() {
+      const year = String(new Date().getFullYear());
+      const counts = { book: 0, game: 0, movie: 0 };
+
+      document.querySelectorAll(".review").forEach(item => {
+        if (item.dataset.date.slice(0, 4) === year && counts[item.dataset.type] !== undefined) {
+          counts[item.dataset.type]++;
+        }
+      });
+
+      document.getElementById("stats-title").textContent = year + " stats";
+
+      // bar caps at 100% once the goal is hit, but the count keeps going
+      const pct = Math.min(counts.book / BOOK_GOAL, 1) * 100;
+      document.getElementById("booksBar").style.width = pct + "%";
+      document.getElementById("booksCount").textContent = counts.book + " / " + BOOK_GOAL;
+
+      document.getElementById("gamesCount").textContent = counts.game;
+      document.getElementById("moviesCount").textContent = counts.movie;
+    }
+
+    updateStats();
+  </script>
+
+</body>
+</html>
