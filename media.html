@@ -7,61 +7,120 @@
 
     @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Sorts+Mill+Goudy:ital@0;1&display=swap');
 
-body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  font-family: 'Sorts Mill Goudy', serif;
-  color: black;
-  position: relative;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url('cybersigilangel.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(1.5px);
-  transform: scale(1.05);
-  z-index: -1;
-}
-
-    .box {
-      background: rgba(255, 255, 255, 0.94);
-      border: 0.0002x solid black;
-      box-sizing: border-box;
+    /* ---------- palette (shared with the main page) ---------- */
+    :root {
+      --ink: #2c324a;
+      --link: #3d4a78;
+      --hover: #1e2440;
+      --accent: #E89EB8;
+      --rule: rgba(60, 70, 110, 0.4);
+      --rule-strong: rgba(60, 70, 110, 0.7);
+      --glow: rgba(150, 175, 235, 0.85);
     }
 
-    .box::before {
-        background-image: url("whitelace.png");
-  background-repeat: repeat;
-  background-size: 40px 40px;
-  filter: blur(0.2px) drop-shadow(0 2px 8px rgba(170,170,200,0.06));
-  border-radius: 10px;
+    * {
+      cursor: url(https://cur.cursors-4u.net/nature/nat-10/nat949.ani), url(https://cur.cursors-4u.net/nature/nat-10/nat949.png), auto !important;
     }
 
-    #favorites {
-      width: 280px;
-      height: 500px;
-      padding: 10px 4px 4px;
-      text-align: center;
+    /* ---------- base ---------- */
+    body {
+      margin: 0;
+      height: 100vh;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      font-family: 'Sorts Mill Goudy', serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('cybersigilangel.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(1.5px);
+      transform: scale(1.05);
+      z-index: -1;
+    }
+
+    h2, h3, label, button {
+      text-transform: lowercase;
+    }
+
+    a, a:link, a:visited {
+      color: var(--link);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--rule);
+    }
+
+    a:hover, a:focus {
+      color: var(--accent);
+      border-bottom-color: var(--rule-strong);
+    }
+
+    a:active {
+      color: var(--hover);
+    }
+
+    /* image links don't get the dashed underline */
+    .fav-item,
+    .review > a {
+      border-bottom: none !important;
+    }
+
+    /* ---------- panels ---------- */
+    .box {
+      position: relative;
+      z-index: 0;
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(8, 8, 12, 0.55);
+      box-sizing: border-box;
+      font-size: 1.04rem;
+      line-height: 1.4;
+    }
+
+    /* lace trim, same as the sidebars on the main page */
+    .box::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      z-index: -1;
+      background-image: url("whitelace.png");
+      background-repeat: repeat;
+      background-size: 40px 40px;
+      filter: blur(0.2px) drop-shadow(0 2px 8px rgba(170, 170, 200, 0.06));
+      border-radius: 10px;
     }
 
     #favorites h2,
     #reviews h2 {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1.5rem;
       font-weight: normal;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- favorites ---------- */
+    #favorites {
+      width: 280px;
+      height: 500px;
+      padding: 16px 0 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
     }
 
     .selector {
@@ -71,9 +130,28 @@ body::before {
     .selector button {
       background: none;
       border: none;
+      padding: 0 6px;
       font-family: inherit;
-      font-size: 1em;
-      cursor: pointer;
+      font-size: 1.2em;
+      color: var(--link);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .selector button:hover {
+      color: var(--accent);
+      transform: scale(1.2);
+    }
+
+    .selector button:active {
+      color: var(--hover);
+    }
+
+    #category {
+      display: inline-block;
+      min-width: 8em;
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 0.95em;
+      letter-spacing: 1px;
     }
 
     /* favorites grid */
@@ -82,7 +160,7 @@ body::before {
       min-height: 0;
       overflow-y: auto;
       padding: 14px 12px;
-      border-top: 2px solid black;
+      border-top: 3px double rgba(60, 70, 110, 0.45);
     }
 
     .fav-grid {
@@ -100,12 +178,16 @@ body::before {
     }
 
     .fav-item img {
-  aspect-ratio: auto;      /* stop forcing a 3:4 box */
-  object-fit: contain;     /* never crop */
-  border: none;
-  background: none;
+      display: block;
+      margin: 0 auto;
+      aspect-ratio: auto;      /* stop forcing a 3:4 box */
+      object-fit: contain;     /* never crop */
+      border: none;
+      background: none;
       height: 104px;
       width: 104px;
+      filter: drop-shadow(0 0 0 transparent);
+      transition: filter 0.3s ease;
     }
 
     .fav-grid.portrait img { aspect-ratio: 3 / 4; }
@@ -113,15 +195,15 @@ body::before {
     .fav-grid.square img   { aspect-ratio: 1 / 1; }
 
     .fav-grid.bw img {
-      filter: grayscale(97%);
+      filter: saturate(0.1) drop-shadow(0 0 0 transparent);
     }
 
-    .fav-item img {
-      transition: filter 0.2s ease;
+    .fav-item:hover img {
+      filter: drop-shadow(0 0 5px var(--glow));
     }
 
     .fav-grid.bw .fav-item:hover img {
-      filter: grayscale(0%);
+      filter: saturate(1) drop-shadow(0 0 5px var(--glow));
     }
 
     .fav-item:hover {
@@ -133,6 +215,7 @@ body::before {
       transform: rotate(3deg) scale(1.1);
     }
 
+    /* ---------- reviews ---------- */
     #reviews {
       width: 640px;
       height: 700px;
@@ -145,11 +228,19 @@ body::before {
       text-align: center;
     }
 
+    /* the lone home link under the title */
+    #reviews > li {
+      list-style: none;
+      margin-bottom: 12px;
+      font-size: 0.95em;
+      text-align: center;
+    }
+
     .reviews-body {
       flex: 1;
       display: flex;
       min-height: 0; /* lets the review list scroll instead of growing the box */
-      border-top: 2px solid black;
+      border-top: 3px double rgba(60, 70, 110, 0.45);
     }
 
     #review-list {
@@ -162,8 +253,8 @@ body::before {
     /* ---------- filter sidebar ---------- */
     #filter {
       width: 180px;
-      padding: 16px 16px 20px;
-      border-left: 2px solid black;
+      padding: 14px 16px 16px;
+      border-left: 3px double rgba(60, 70, 110, 0.45);
       box-sizing: border-box;
       overflow-y: auto;
     }
@@ -175,7 +266,7 @@ body::before {
       text-align: center;
       margin: 0 0 14px;
       padding-bottom: 8px;
-      border-bottom: 1px dotted black;
+      border-bottom: 1px dashed var(--rule);
       letter-spacing: 0.5px;
     }
 
@@ -185,29 +276,29 @@ body::before {
       box-sizing: border-box;
       font-family: inherit;
       font-size: 0.95em;
-      color: black;
-      background-color: rgba(255, 255, 255, 0.9);
-      border: 1px solid black;
-      border-radius: 0;
+      color: var(--ink);
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(60, 70, 110, 0.5);
+      border-radius: 4px;
       padding: 5px 8px;
       outline: none;
-      transition: box-shadow 0.15s ease, transform 0.15s ease;
+      box-shadow: inset 0 1px 3px rgba(44, 50, 74, 0.15);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     #filter input::placeholder {
       font-style: italic;
-      color: #777;
+      color: rgba(44, 50, 74, 0.5);
     }
 
     #filter select {
       display: block;
       margin-top: 4px;
       padding-right: 24px;
-      cursor: pointer;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='black'/></svg>");
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='%232c324a'/></svg>");
       background-repeat: no-repeat;
       background-position: right 8px center;
       background-size: 8px 5px;
@@ -217,22 +308,22 @@ body::before {
     #filter select:hover,
     #filter input:focus,
     #filter select:focus {
-      box-shadow: 2px 2px 0 black;
-      transform: translate(-1px, -1px);
+      border-color: var(--link);
+      box-shadow: inset 0 1px 3px rgba(44, 50, 74, 0.15), 0 0 6px var(--glow);
     }
 
     #filter label {
       display: block;
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 0.9em;
       letter-spacing: 0.3px;
     }
 
     /* ---------- stats ---------- */
     #stats {
-      margin-top: 22px;
-      padding-top: 14px;
-      border-top: 2px solid black;
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 3px double rgba(60, 70, 110, 0.45);
       text-align: center;
     }
 
@@ -241,7 +332,7 @@ body::before {
     }
 
     .stat {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .stat:last-child {
@@ -256,8 +347,10 @@ body::before {
 
     .progress {
       height: 14px;
-      border: 1px solid black;
-      background: white;
+      border: 1px solid rgba(60, 70, 110, 0.5);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: inset 0 1px 3px rgba(44, 50, 74, 0.2);
       padding: 2px;
       box-sizing: border-box;
     }
@@ -265,7 +358,8 @@ body::before {
     .progress-fill {
       height: 100%;
       width: 0;
-      background: black;
+      border-radius: 2px;
+      background: var(--link);
       transition: width 0.4s ease;
     }
 
@@ -275,34 +369,39 @@ body::before {
     }
 
     .stat-number {
+      font-family: 'Cinzel Decorative', cursive;
       font-size: 1.4em;
       line-height: 1.1;
     }
 
-    /* review entries (plain) */
+    /* ---------- review entries ---------- */
     .review {
       display: flex;
       gap: 15px;
       margin-bottom: 20px;
       padding-bottom: 15px;
-      border-bottom: 1px solid black;
+      border-bottom: 1px dashed var(--rule);
     }
 
     .review:last-child {
       border-bottom: none;
     }
 
-.review img {
-  width: 80px;
-  height: auto;
-  align-self: flex-start;
-  filter: grayscale(97%);
-  transition: filter 0.2s ease;
-}
+    .review img {
+      display: block;
+      width: 80px;
+      height: auto;
+      box-sizing: border-box;
+      padding: 3px;
+      background: #fff;
+      border: 1px solid rgba(60, 70, 110, 0.4);
+      filter: saturate(0.1) drop-shadow(0 0 0 transparent);
+      transition: filter 0.3s ease;
+    }
 
-.review img:hover {
-  filter: grayscale(0%);
-}
+    .review img:hover {
+      filter: saturate(1) drop-shadow(0 0 4px var(--glow));
+    }
 
     .review-content {
       flex: 1;
@@ -310,7 +409,11 @@ body::before {
 
     .review-content h3 {
       margin: 0 0 5px;
-      font-weight: bold;
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1.08rem;
+      font-weight: normal;
+      letter-spacing: 0.4px;
+      line-height: 1.25;
     }
 
     .review-content p {
@@ -320,21 +423,60 @@ body::before {
     .toggle-btn {
       background: none;
       border: none;
+      border-bottom: 1px dashed var(--rule);
       padding: 0;
       margin-top: 5px;
       font-family: inherit;
       font-size: 1em;
-      text-decoration: underline;
-      cursor: pointer;
+      color: var(--link);
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
-    .review-text {
+    .toggle-btn:hover,
+    .toggle-btn:focus {
+      color: var(--accent);
+      border-bottom-color: var(--rule-strong);
+    }
+
+    .toggle-btn:active {
+      color: var(--hover);
+    }
+
+    .review-content .review-text {
       display: none;
       margin-top: 8px;
+      padding: 8px 10px;
+      line-height: 1.5;
+      background: rgba(60, 70, 110, 0.05);
+      border: 1px dashed rgba(60, 70, 110, 0.3);
+      border-radius: 6px;
     }
 
     #no-results {
       display: none;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ---------- scrollbars ---------- */
+    #fav-area,
+    #review-list,
+    #filter {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(60, 70, 110, 0.35) transparent;
+    }
+
+    #fav-area::-webkit-scrollbar,
+    #review-list::-webkit-scrollbar,
+    #filter::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #fav-area::-webkit-scrollbar-thumb,
+    #review-list::-webkit-scrollbar-thumb,
+    #filter::-webkit-scrollbar-thumb {
+      background-color: rgba(60, 70, 110, 0.35);
+      border-radius: 3px;
     }
   </style>
 </head>
