@@ -1,186 +1,887 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Articles</title>
+  <meta charset="UTF-8">
+  <title>medialog</title>
+  <style>
 
-    <style>
-        body {
-            max-width: 850px;
-            margin: 40px auto;
-            padding: 0 35px;
-            line-height: 1.5;
-        }
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Crimson+Text:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Sorts+Mill+Goudy:ital@0;1&display=swap');
 
-        article {
-            margin-bottom: 45px;
-        }
+    /* ---------- palette: black, white, and pink only on hover ---------- */
+    :root {
+      --ink: #000;
+      --pink: #E89EB8;
+      --rule: rgba(0, 0, 0, 0.4);
+      --glow: rgba(232, 158, 184, 0.85);
+    }
 
-        .article-content {
-            margin-top: 25px;
-        }
+    * {
+      cursor: url(https://cur.cursors-4u.net/nature/nat-10/nat949.ani), url(https://cur.cursors-4u.net/nature/nat-10/nat949.png), auto !important;
+    }
 
-        .article-content p {
-            margin-bottom: 1.2em;
-        }
+    /* ---------- base ---------- */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      font-family: 'Sorts Mill Goudy', serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      position: relative;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-        .read-more {
-            cursor: pointer;
-            text-decoration: underline;
-            background: none;
-            border: none;
-            padding: 0;
-            font: inherit;
-            color: inherit;
-        }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('cybersigilangel.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(1.5px);
+      transform: scale(1.05);
+      z-index: -1;
+    }
 
-        .article-separator {
-            border: none;
-            border-top: 4px solid;
-            margin: 45px 0;
-        }
+    h2, h3, label, button {
+      text-transform: lowercase;
+    }
 
-        @media (max-width: 600px) {
-            body {
-                padding: 0 20px;
-                margin: 25px auto;
-            }
-        }
-    </style>
+    a, a:link, a:visited {
+      color: var(--ink);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--rule);
+    }
+
+    a:hover, a:focus-visible {
+      color: var(--pink);
+      border-bottom-color: var(--pink);
+    }
+
+    /* image links don't get the dashed underline */
+    .fav-item,
+    .review > a {
+      border-bottom: none !important;
+    }
+
+    /* ---------- panels ---------- */
+    .box {
+      position: relative;
+      z-index: 0;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+      box-sizing: border-box;
+      font-size: 1.04rem;
+      line-height: 1.4;
+    }
+
+    /* lace trim, same as the sidebars on the main page */
+    .box::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      z-index: -1;
+      background-image: url("whitelace.png");
+      background-repeat: repeat;
+      background-size: 40px 40px;
+      filter: blur(0.2px) drop-shadow(0 2px 8px rgba(170, 170, 170, 0.06));
+      border-radius: 10px;
+    }
+
+    #favorites h2,
+    #reviews h2 {
+      margin: 0 0 8px;
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 1.5rem;
+      font-weight: normal;
+      letter-spacing: 1px;
+    }
+
+    /* ---------- favorites (attached to the left side of medialog) ---------- */
+    #favorites {
+      z-index: 1;
+      width: 280px;
+      height: 500px;
+      padding: 16px 0 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      border-radius: 8px 0 0 8px;
+      border-right: 3px double var(--rule);   /* the seam between the two panels */
+      clip-path: inset(-40px 0 -40px -40px);  /* stops its shadow and lace spilling onto medialog */
+    }
+
+    #favorites::before {
+      border-radius: 10px 0 0 10px;
+    }
+
+    .selector {
+      margin-bottom: 10px;
+    }
+
+    .selector button {
+      background: none;
+      border: none;
+      padding: 0 6px;
+      font-family: inherit;
+      font-size: 1.2em;
+      color: var(--ink);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .selector button:hover {
+      color: var(--pink);
+      transform: scale(1.2);
+    }
+
+    #category {
+      display: inline-block;
+      min-width: 5.5em;
+    }
+
+    /* favorites grid */
+    #fav-area {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 14px 12px;
+      border-top: 3px double var(--rule);
+    }
+
+    .fav-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .fav-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .fav-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+    .fav-item {
+      display: block;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .fav-item img {
+      display: block;
+      margin: 0 auto;
+      aspect-ratio: auto;      /* stop forcing a 3:4 box */
+      object-fit: contain;     /* never crop */
+      border: none;
+      background: none;
+      height: 104px;
+      width: 104px;
+      filter: drop-shadow(0 0 0 transparent);
+      transition: filter 0.3s ease;
+    }
+
+    .fav-grid.portrait img { aspect-ratio: 3 / 4; }
+    .fav-grid.poster img   { aspect-ratio: 2 / 3; }
+    .fav-grid.square img   { aspect-ratio: 1 / 1; }
+
+    .fav-grid.bw img {
+      filter: saturate(0.1) drop-shadow(0 0 0 transparent);
+    }
+
+    .fav-item:hover img {
+      filter: drop-shadow(0 0 5px var(--glow));
+    }
+
+    .fav-grid.bw .fav-item:hover img {
+      filter: saturate(1) drop-shadow(0 0 5px var(--glow));
+    }
+
+    .fav-item:hover {
+      transform: rotate(-3deg) scale(1.1);
+      z-index: 1;
+    }
+
+    .fav-item:nth-child(even):hover {
+      transform: rotate(3deg) scale(1.1);
+    }
+
+    /* ---------- reviews ---------- */
+    #reviews {
+      width: 640px;
+      height: 700px;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+    }
+
+    #reviews h2 {
+      text-align: center;
+    }
+
+    /* the lone home link under the title */
+    #reviews > li {
+      list-style: none;
+      margin-bottom: 12px;
+      font-size: 0.95em;
+      text-align: center;
+    }
+
+    .reviews-body {
+      flex: 1;
+      display: flex;
+      min-height: 0; /* lets the review list scroll instead of growing the box */
+      border-top: 3px double var(--rule);
+    }
+
+    #review-list {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto; /* scrollable reviews section */
+      min-height: 0;
+    }
+
+    /* ---------- filter sidebar ---------- */
+    #filter {
+      width: 180px;
+      padding: 14px 16px 16px;
+      border-left: 3px double var(--rule);
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-family: 'Cinzel Decorative', cursive;
+      font-size: 0.95em;
+      font-weight: normal;
+      text-align: center;
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--rule);
+      letter-spacing: 0.5px;
+    }
+
+    #filter input,
+    #filter select {
+      width: 100%;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 0.95em;
+      color: var(--ink);
+      background-color: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      padding: 5px 8px;
+      outline: none;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #filter input::placeholder {
+      font-style: italic;
+      color: #777;
+    }
+
+    #filter select {
+      display: block;
+      margin-top: 4px;
+      padding-right: 24px;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M0 0h10L5 6z' fill='black'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      background-size: 8px 5px;
+    }
+
+    #filter input:hover,
+    #filter select:hover,
+    #filter input:focus-visible,
+    #filter select:focus-visible {
+      border-color: var(--pink);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.15), 0 0 6px var(--glow);
+    }
+
+    #filter label {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.9em;
+      letter-spacing: 0.3px;
+    }
+
+    /* ---------- stats ---------- */
+    #stats {
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 3px double var(--rule);
+      text-align: center;
+    }
+
+    #stats .panel-title {
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      margin-bottom: 12px;
+    }
+
+    .stat:last-child {
+      margin-bottom: 0;
+    }
+
+    .stat-label {
+      font-size: 0.9em;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .progress {
+      height: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 2px;
+      background: #000;
+      transition: width 0.4s ease;
+    }
+
+    .stat-count {
+      margin-top: 4px;
+      font-size: 1.05em;
+    }
+
+    .stat-number {
+      font-size: 1.4em;
+      line-height: 1.1;
+    }
+
+    /* ---------- review entries ---------- */
+    .review {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed var(--rule);
+    }
+
+    .review:last-child {
+      border-bottom: none;
+    }
+
+    .review img {
+      display: block;
+      width: 80px;
+      height: auto;
+      box-sizing: border-box;
+      padding: 3px;
+      background: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      filter: saturate(0.1) drop-shadow(0 0 0 transparent);
+      transition: filter 0.3s ease;
+    }
+
+    .review img:hover {
+      filter: saturate(1) drop-shadow(0 0 4px var(--glow));
+    }
+
+    .review-content {
+      flex: 1;
+    }
+
+    .review-content h3 {
+      margin: 0 0 5px;
+      font-weight: bold;
+    }
+
+    .review-content p {
+      margin: 2px 0;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      border-bottom: 1px dashed var(--rule);
+      padding: 0;
+      margin-top: 5px;
+      font-family: inherit;
+      font-size: 1em;
+      color: var(--ink);
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .toggle-btn:hover,
+    .toggle-btn:focus-visible {
+      color: var(--pink);
+      border-bottom-color: var(--pink);
+    }
+
+    .review-content .review-text {
+      display: none;
+      margin-top: 8px;
+    }
+
+    #no-results {
+      display: none;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ---------- scrollbars ---------- */
+    #fav-area,
+    #review-list,
+    #filter {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    }
+
+    #fav-area::-webkit-scrollbar,
+    #review-list::-webkit-scrollbar,
+    #filter::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #fav-area::-webkit-scrollbar-thumb,
+    #review-list::-webkit-scrollbar-thumb,
+    #filter::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.3);
+      border-radius: 3px;
+    }
+  </style>
 </head>
-
 <body>
 
-    <!-- Navigation -->
-    <center>articles</center>
-    <p><a href="index.html">← home</a></p>
+  <div id="favorites" class="box">
+    <h2 style="font-family: 'Cinzel Decorative', cursive;">favorites ♡ </h2>
+    <div class="selector">
+      <button id="prev">&lt;</button>
+      <span id="category">characters</span>
+      <button id="next">&gt;</button>
+    </div>
+    <div id="fav-area">
+      <div id="fav-grid" class="fav-grid"></div>
+    </div>
+  </div>
 
-    <hr>
+  <div id="reviews" class="box">
+    <h2 style="font-family: 'Cinzel Decorative', cursive;">medialog</h2>
+     <li><a href="index.html">[x] home</a></li>
+    <div class="reviews-body">
+      <div id="review-list">
+          <div class="review" data-type="movie" data-stars="5" data-date="2026-11-15">
+          <a href="https://letterboxd.com/film/wildwood-2026/" target="_blank">
+            <img src="https://a.ltrbxd.com/resized/film-poster/7/0/9/4/6/0/709460-wildwood-2026-0-2000-0-3000-crop.jpg?v=e0b4be5769" alt="the descent">
+          </a>
+          <div class="review-content">
+            <h3>wildwood</h3>
+            <p>type: movie</p>
+            <p>stars: ★★★★★</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">Holy... uh. Damn. Movie of the year? Perhaps. Nah, just kidding, I don't think adaptations should ever be in the running for film of the year. But still, this movie was incredible. It was so visually stunning I teared up multiple times from how beautiful it was, and the plot wasn't anything shabby either. I haven't loved an animated film this much since Wolfwalkers. It could just be my nostalgia talking, because I was a big fan of the Wildwood series as a kid, but... wow, what an amazing film. Everyone should go see it if possible. There are still amazing things capable with animation, no matter what anyone tries to tell you, so never give up.</p>
+          </div>
+        </div>
+        <div class="review" data-type="movie" data-stars="1" data-date="2026-10-23">
+          <a href="https://www.imdb.com/title/tt0435625/" target="_blank">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjdApDrMrOSH_6WGqGM5T0ykIDaIm-dIbdKc3C1CLy5Q&s=10" alt="the descent">
+          </a>
+          <div class="review-content">
+            <h3>the descent</h3>
+            <p>type: movie</p>
+            <p>stars: ★☆☆☆☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">This was a good, 3/5 horror movie until they killed Juno for some reason. I know Sarah didn't technically kill Juno but she essentially did. Therefore I am rating it 1 star because Juno deserves better. Also, I couldn't take the monsters seriously because they looked like Gollum, and a video about the Nutty Putty cave incident scares me like 10x more than this.</p>
+          </div>
+        </div>
 
-    <!-- Article One -->
-    <article>
-        <h1>On the Bicameral Mind</h1>
+        <div class="review" data-type="game" data-stars="5" data-date="2026-09-19">
+          <a href="https://store.steampowered.com/agecheck/app/2131640/" target="_blank">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRx_mfYbtLOlO1jnMlH7dyx-G3gJ8I9ALFz7U9LORMC0A&s=10" alt="metal gear solid 2: sons of liberty">
+          </a>
+          <div class="review-content">
+            <h3>metal gear solid 2: sons of liberty</h3>
+            <p>type: game</p>
+            <p>stars: ★★★★★</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">You may have heard this game being glazed as one of the best video games of all time. I'm here to inform you that those reviews are, fortunately, correct. Metal Gear Solid 2 is an amazing experience, and it's not just because it has a pretty boy as the protagonist. The game has so many twists and turns that it's almost umineko-esque in its complexity, so please, don't spoil it for yourself before playing, and the fact that it was written in 1999 is genuinely insane with how relevant the discussions of AI and internet censorship are to our modern day world. Raiden is a relatively mundane protagonist and certainly not as compelling as the iconic Solid Snake, but it doesn't affect the experience one bit, since he's a stand-in for the player. The supporting cast was great, and the female characters felt much more well written than the ones in MGS1 and MGS3 (yes, obviously excluding the boss). It turns into a horror game at some points. Gameplay is much better than MGS1 with the addition of aimed shooting, though it seemed a bit too easy at times, I rarely died except to those fuck ass metal gear rays towards the end. The mission where you escort Emma was not nearly as unbearable as some reviews acted like it was once you had the path down. But the main draw of this game is its story, and for good reason. "You lack the qualifications to exercise free will." Play this game. Also, bonus points for being the first video game to use the word 'bisexual'!</p>
+          </div>
+        </div>
 
-        <p>
-            Julian Jaynes' theory of the bicameral mind is quite a
-            controversial, and admittedly strange, concept to grasp.
-            But is it really so unbelievable?
-        </p>
+        <div class="review" data-type="game" data-stars="4" data-date="2026-08-10">
+          <a href="https://store.steampowered.com/agecheck/app/2131630/" target="_blank">
+            <img src="https://i.redd.it/tncjsj6ug04b1.jpg" alt="metal gear solid 1">
+          </a>
+          <div class="review-content">
+            <h3>metal gear solid 1</h3>
+            <p>type: game</p>
+            <p>stars: ★★★★☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">A brilliant game just like all the others in the series, but this one is starting to show its age in comparasion. Coming from the cold war era MGS3 to this was quite jarring, but not necessarily bad. I actually don't have any issue with the graphics, for the time they're really impressive and I think the low poly models are a bit endearing, but the gameplay... well. it takes some getting used to. Since I was playing with the original ps1 version on an emulator, there was no first person aiming outside of sniping which made it difficult to dispatch enemies, and it feels like Snake had way less health and was much more squishy than in the later games, even on the same difficulty setting. The story was great, it's not a transgressive masterpiece like the second game in the series, but Liquid was a really fun character and it's a great introduction to Snake as a protagonist. However, the female cast was... not ideal. I love Sniper Wolf and her accent, but her character basically just served to die so Otacon got character development, and Meryl was... uh, you can definitely see how this game was made in the 90s. And they implied she was raped for pretty much no reason and then never addressed it. Naomi was good, I liked her, but compared to how fleshed out Otacon, Snake, Grey Fox, Liquid and Ocelot are in this game, it's a bit telling that there's only one female character that I would say was afforded the same development as them. Like I said, a good game, but definitely showing its age in more ways than one.</p>
+          </div>
+        </div>
 
-        <p><strong>ilya faie</strong></p>
-        <p><em>02/04/28</em></p>
+        <div class="review" data-type="game" data-stars="5" data-date="2026-08-10">
+          <a href="https://store.steampowered.com/agecheck/app/2131650/" target="_blank">
+            <img src="https://store-images.s-microsoft.com/image/apps.46772.14251552413608205.5e75ef49-479d-43d5-93cf-788c770fcdac.f7cbebfc-9891-4b57-80ef-327c120cba10" alt="metal gear solid 3: snake eater">
+          </a>
+          <div class="review-content">
+            <h3>metal gear solid 3: snake eater</h3>
+            <p>type: game</p>
+            <p>stars: ★★★★★</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">It's Metal Gear Solid 3, what can I say? This was my introduction to the series, and damn, was it a good one. Gameplay was great, though it took me a bit to get used to the controls on the 3ds (BTW the 3d on the 3ds version of the game looks AMAZING), and the world felt really open despite being divided up into sections. The cure system was my favorite part for some reason, it was just so satisfying to hear those little sound effects when I properly bandaged up a wound. Combat was pretty fun although I nearly smashed my 3ds trying to defeat Volgin that first time. And the story? Well, it's fucking METAL GEAR SOLID 3, obviously the story is great. Compared to the other MGS games it's more fun and campy and feels like a real action movie rather than a parody of one, but that's not inherently a bad thing, and I did sob my eyes out when... you know. Ocelot, Eva, Volgin, the Boss and even Snake all contributed to making this world feel really lively, the character writing was excellent. My only complaint about the story is that it wasn't always presented in a particularly understandable manner, I still left feeling confused about some things, but this is not the last game in Big Boss' saga and questions can always be answered.</p>
+          </div>
+        </div>
 
-        <hr>
+        <div class="review" data-type="book" data-stars="5" data-date="2025-10-15">
+          <a href="https://www.goodreads.com/book/show/201341.Mossflower" target="_blank">
+            <img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1281811805i/201341.jpg" alt="mossflower">
+          </a>
+          <div class="review-content">
+            <h3>mossflower</h3>
+            <p>type: book</p>
+            <p>stars: ★★★★★</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">ok, i'm incredibly biased because the redwall series was my childhood, but it's peak, I don't know what else to tell you. Mossflower doesn't actually take place in Redwall as it's a prequel, so it makes a great introduction to the series and Jacques' writing style. Redwall is REALLY good at making their animal characters feel human AND like forest animals at the same time. the plot is great, the prose is incredibly vivid and you feel like you're inside the book, which is important for any type of fantasy. the story's simplicity is reminiscent of classic high fantasy like lord of the rings, but a bit more cozier.</p>
+          </div>
+        </div>
 
-        <div class="article-content">
-            <p>
-                Is consciousness real? Well, of course it is, you'd say.
-                I'm conscious - I have thoughts, emotions, and everything
-                in between, therefore at least one person is conscious.
-                But that's where it becomes interesting, philosophically.
-                You can say you're conscious, and you can think you're
-                conscious, but there is no actual method of proving that
-                you are. "I think, therefore I am". But what if you don't
-                think? Can you prove that you do? One who does not think
-                will still believe themselves to be a conscious being,
-                capable of thinking, and will insist that they are conscious.
-            </p>
+        <div class="review" data-type="book" data-stars="3" data-date="2025-10-15">
+          <a href="https://www.goodreads.com/book/show/40961230-the-travelling-cat-chronicles" target="_blank">
+            <img src="https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1532711745i/40961230.jpg" alt="the travelling cat chronicles">
+          </a>
+          <div class="review-content">
+            <h3>the travelling cat chronicles</h3>
+            <p>type: book</p>
+            <p>stars: ★★★☆☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">a sweet, relatively short story about a stray cat who is saved from a car accident, and then adopted by a man who is dying from cancer. the narration from the perspective of the cat is very well written, and he isn't anthropomorphized too much. we learn a lot about his owner's life and childhood, but it's shown through conversations and meetings with his friends who seek to adopt the cat, and it feels like a realistic childhood instead of a generic sad backstory. the book is short and simple, but that doesn't make it bad, and the ending is quite emotional.</p>
+          </div>
+        </div>
 
-            <p>
-                This is where the concept of a philosophical zombie,
-                or a p-zombie, comes in. No, they aren't really zombies,
-                and they don't really pose a threat to humans - besides
-                being an existential one at least. A p-zombie will go
-                through their life exactly like a normal human being.
-                Talking, laughing, reacting to pain, forming relationships,
-                even debating philosophy - but with one crucial difference:
-                there is no inner experience. No “what it’s like” to be
-                them. No subjective awareness. From the outside, they are
-                indistinguishable from a conscious person, yet on the
-                inside there is… nothing.
-            </p>
+        <div class="review" data-type="book" data-stars="5" data-date="2025-10-08">
+          <a href="https://www.goodreads.com/book/show/81069.The_Forgotten_Beasts_of_Eld" target="_blank">
+            <img src="https://i0.wp.com/reviews.metaphorosis.com/wp-content/uploads/sites/14/2019/07/The-Forgotten-Beasts-of-Eld-Patricia-A-McKillip.jpg?w=1600&ssl=1" alt="the forgotten beasts of eld">
+          </a>
+          <div class="review-content">
+            <h3>the forgotten beasts of eld</h3>
+            <p>type: book</p>
+            <p>stars: ★★★★★</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">high fantasy is easy to write - good high fantasy isn't. the forgotten beasts of eld is a fairy tale that follows the life of a female wizard who keeps magical beasts, and her relationship with the world of men. the prose is absolutely beautiful, and despite using sophisticated vocabulary, it's somehow easy to understand and immerse yourself within the setting. at the same time as being an immersive high fantasy experience, the book is about love and revenge and hatred and motherhood... and many other things, without taking on an overly preachy tone typically of fairytales. there's barely any proper worldbuilding and yet it manages to have a more compelling story than stories that insist upon explaining every facet of the world. relationships jump from being strangers to getting engaged, but in a way that makes sense. i genuinely believe everyone should read this book, and it is worthy of being considered a classic.</p>
+          </div>
+        </div>
 
-            <!-- Hidden continuation -->
-            <div id="article-one-more" hidden>
-                <p>
-                    This raises a rather uncomfortable question:
-                    if consciousness cannot be observed directly,
-                    how can we ever know that it exists in anyone
-                    other than ourselves?
-                </p>
+        <div class="review" data-type="book" data-stars="4" data-date="2025-08-31">
+          <a href="https://www.goodreads.com/book/show/12168274-towards-zero" target="_blank">
+            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1458414333i/12168274.jpg" alt="towards zero">
+          </a>
+          <div class="review-content">
+            <h3>towards zero</h3>
+            <p>type: book</p>
+            <p>stars: ★★★★☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">one of the best agatha christie novels, with a very interesting twist, but the blurb on the back kinda spoils it if you know what to look for (you'll be able to deduce the murderer once they supposedly find them). all of the characters are interesting, and at one point in the book i suspected nearly all of them. however, it does lean more into a detective story type of narrative, which i don't particularly enjoy (unless it's a certain detective). the less you know about this book, the more you will enjoy it, so i won't spoil it too much.</p>
+          </div>
+        </div>
 
-                <p>
-                    And perhaps more importantly, what would it mean
-                    if the experience we call consciousness is not
-                    something humans have always possessed?
-                </p>
+        <div class="review" data-type="book" data-stars="4" data-date="2025-08-31">
+          <a href="https://www.goodreads.com/book/show/7986010-the-meaning-of-mary-magdalene" target="_blank">
+            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320564575i/7986010.jpg" alt="the meaning of mary magdalene">
+          </a>
+          <div class="review-content">
+            <h3>the meaning of mary magdalene</h3>
+            <p>type: book</p>
+            <p>stars: ★★★★☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">i am not religious. i've read parts of the bible when bored in hotel rooms, but i've always gravitated more towards the old testament, because i don't like how jesus's words are told through secondhand sources in the new testament. it's annoying. i'm a historian. use direct sources! so, i was a bit confused while reading this very religious book by a priest, and it didn't help that i was in alaska, with no internet access, surrounded by my buddhist relatives, trying to figure out what the heck the "pascal mystery" was. (i still don't understand it after googling it). however, even without much religious knowledge, i was able to follow the argument that mrs. borgeault was making, because she is an incredibly talented scholar who is unafraid of speaking her opinion, even when it goes against the views of traditional christianity. this is not necessarily an autobiography of mary magdalene, but moreso the argument that christianity, and humanity as a whole, needs to start discovering how to love again, and she argues this with tact and beauty. an excellent read, but probably not recommended until you read the bible first (and the noncanonical gospels).</p>
+          </div>
+        </div>
 
-                <p>
-                    This is where Julian Jaynes' theory becomes
-                    particularly interesting...
-                </p>
+        <div class="review" data-type="book" data-stars="5" data-date="2025-08-31">
+          <a href="https://www.goodreads.com/book/show/25150798-the-tea-girl-of-hummingbird-lane" target="_blank">
+            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1472151037i/25150798.jpg" alt="the tea girl of hummingbird lane">
+          </a>
+          <div class="review-content">
+            <h3>the tea girl of hummingbird lane</h3>
+            <p>type: book</p>
+            <p>stars: ★★★★★</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">where do i start with this book? "the tea girl of hummingbird lane" is essentially about the love between a mother and a child, and the concept of coincidences. it has a very compelling story that i wasn't able to put down at all, and an extremely well researched portrayal of a rarely talked about ethnic group in china, the akha people. historical fiction books should teach the reader about real events in history. good historical fiction will make you realize that people in other countries who were just statistics in your history class, are humans, despite how long ago they lived. the narrator feels incredibly human, with her own flaws and desires, but we also see the humanity of the people around her - her lover, her mother, and the other people of her village. i couldn't put this book down, and i heavily recommend you read it, as long as you're alright with learning a lot about tea.</p>
+          </div>
+        </div>
+
+        <div class="review" data-type="book" data-stars="3" data-date="2025-08-31">
+          <a href="https://www.goodreads.com/book/show/56887117-the-village-of-eight-graves" target="_blank">
+            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1639306979i/56887117.jpg" alt="the village of eight graves">
+          </a>
+          <div class="review-content">
+            <h3>the village of eight graves</h3>
+            <p>type: book</p>
+            <p>stars: ★★★☆☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">when i picked this book up at the library along with "towards zero", the librarian mentioned that he was like japan's version of agatha christie. i don't think that's entirely true - the only similarity is the complexity of their murder mysteries. this book takes a very dark turn with themes like rape and child abuse, while agatha christie's books, although being about literal murder, are often oddly lighthearted, which gives her books a much more unique feel and defines the classic "murder mystery". village of eight graves, on the other hand, although technically being a murder mystery, honestly seems more like a horror. that being said, it's an entertaining read with an eerie atmosphere that reminds me of old horror video games like silent hill and project zero, which is an impressive feat for a book to pull off. i honestly felt like i was tatsuya trapped in the underground caves. it's a great read that's surprisingly well translated (japanese translations often leave a bit to be destired) and i'll definitely be putting some more of his books on my tbr for the spooky season. an excellent introduction to mr. yokomizo's books.</p>
+          </div>
+        </div>
+
+        <div class="review" data-type="movie" data-stars="1" data-date="2025-08-10">
+          <a href="https://letterboxd.com/film/enders-game/" target="_blank">
+            <img src="https://cdn11.bigcommerce.com/s-yzgoj/images/stencil/1280x1280/products/2922488/5920806/MOVGB47735__29437.1679571520.jpg?c=2" alt="ender's game">
+          </a>
+          <div class="review-content">
+            <h3>ender's game</h3>
+            <p>type: movie</p>
+            <p>stars: ★☆☆☆☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">this might be the worst movie i have ever watched. it seems like it should be a good movie, and that's what is so awful about it. there's so much potential and it was executed horribly. one of those movies that should've stayed as a book, i think...</p>
+          </div>
+        </div>
+
+        <div class="review" data-type="book" data-stars="4" data-date="2025-08-06">
+          <a href="https://www.goodreads.com/book/show/44084665-the-ones-we%27re-meant-to-find" target="_blank">
+            <img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1600354595i/44084665.jpg" alt="joan he - the ones we're meant to find">
+          </a>
+          <div class="review-content">
+            <h3>joan he - the ones we're meant to find</h3>
+            <p>type: book</p>
+            <p>stars: ★★★★☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">This is a very depressing book with robot sex. It's not a YA book, despite the age of the protagonists, and would definitely benefit from a reread after the twist is revealed. Unfortunately, I have to return it to the library, but may revisit it sometime. The first half of the book isn't necessarily bad, but confusing. The second half is very good. The themes probably hit too close to home - it leans more in the direction of hard sci fi/post apocalypse, and the overall vibe reminds me of the book "How High We Go in the Dark". There is no heavy worldbuilding, and that deliberately confusing aspect is, I think, the author's intention.</p>
+          </div>
+        </div>
+
+        <div class="review" data-type="movie" data-stars="4" data-date="2025-08-21">
+          <a href="https://letterboxd.com/film/superman-2025/" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/en/3/32/Superman_%282025_film%29_poster.jpg" alt="superman (2025)">
+          </a>
+          <div class="review-content">
+            <h3>superman (2025)</h3>
+            <p>type: movie</p>
+            <p>stars: ★★★★☆</p>
+            <button class="toggle-btn" onclick="toggleReview(this)">read review</button>
+            <p class="review-text">just a good movie. it's not anything particularly thought-provoking or artistic, it's just a superhero movie with positive messages. absolutely mogged "the batman". and i love you batman so i'm sorry about that.</p>
+          </div>
+        </div>
+
+        <p id="no-results">no reviews match your search.</p>
+
+      </div>
+
+      <div id="filter">
+        <h3 class="panel-title">filters</h3>
+
+        <input type="text" id="searchBar" placeholder="search reviews">
+
+        <label>type
+          <select id="typeFilter">
+            <option value="all">all</option>
+            <option value="book">books</option>
+            <option value="movie">movies</option>
+            <option value="game">games</option>
+          </select>
+        </label>
+
+        <label>stars
+          <select id="starsFilter">
+            <option value="all">all</option>
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+          </select>
+        </label>
+
+        <label>year
+          <select id="yearFilter">
+            <option value="all">all</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+          </select>
+        </label>
+
+        <!-- yearly stats -->
+        <div id="stats">
+          <h3 class="panel-title" id="stats-title">stats</h3>
+
+          <div class="stat">
+            <div class="stat-label">books read</div>
+            <div class="progress">
+              <div class="progress-fill" id="booksBar"></div>
             </div>
+            <div class="stat-count" id="booksCount">0 / 50</div>
+          </div>
 
-            <button class="read-more"
-                    onclick="toggleArticle('article-one-more', this)">
-                Read more ↓
-            </button>
+          <div class="stat">
+            <div class="stat-label">games played</div>
+            <div class="stat-number" id="gamesCount">0</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-label">movies watched</div>
+            <div class="stat-number" id="moviesCount">0</div>
+          </div>
         </div>
-    </article>
+      </div>
+    </div>
+  </div>
 
-    <!-- Separator -->
-    <hr class="article-separator">
+  <script>
+    // favorites data: edit these lists to swap in your own images/links
+    const ph = (text, w, h) =>
+      `https://placehold.co/${w}x${h}/e8e8e8/000000?text=${encodeURIComponent(text)}`;
 
-    <!-- Article Two (Placeholder) -->
-    <article>
-        <h1>On the Nature of Reality</h1>
+    const favorites = {
+      characters: {
+        layout: "cols-2 portrait",
+        items: [
+          { name: "alucard",     img: "faveimages/alucard.png",  url: "https://castlevania.fandom.com/wiki/Alucard" },
+          { name: "liquid snake",          img: "faveimages/liquid.png",       url: "https://metalgear.fandom.com/wiki/Liquid_Snake" },
+          { name: "revolver ocelot", img: "faveimages/revolver.png",       url: "https://metalgear.fandom.com/wiki/Revolver_Ocelot" },
+          { name: "wanderer",          img: "faveimages/wanderer.png",       url: "https://genshin-impact.fandom.com/wiki/Wanderer" },
+          { name: "suguru geto",        img: "faveimages/geto.png",     url: "https://jujutsu-kaisen.fandom.com/wiki/Suguru_Geto" },
+          { name: "higgs monaghan",    img: "faveimages/higgs.png", url: "https://deathstranding.fandom.com/wiki/Higgs_Monaghan" },
+          { name: "amelie",    img: "faveimages/amelie.png", url: "https://deathstranding.fandom.com/wiki/Amelie" },
+          { name: "angela",    img: "faveimages/angela.png", url: "https://library-of-ruina.fandom.com/wiki/Angela" },
+          { name: "beatrice",    img: "faveimages/beato.png", url: "https://07th-expansion.fandom.com/wiki/Beatrice" },
+          { name: "sephiroth crescent",    img: "faveimages/sephiroth.png", url: "https://finalfantasy.fandom.com/wiki/Sephiroth" },
+          { name: "aerith gainsborough",    img: "faveimages/aerith.png", url: "https://finalfantasy.fandom.com/wiki/Aerith_Gainsborough" },
+          { name: "cecil harvey",    img: "faveimages/cecil.png", url: "https://finalfantasy.fandom.com/wiki/Cecil_Harvey" },
+          { name: "denia",    img: "faveimages/denia.png", url: "https://wutheringwaves.fandom.com/wiki/Denia" }
+        ]
+      },
+      games: {
+        layout: "cols-2 poster bw",
+        items: [
+          { name: "metal gear solid 2", img: "faveimages/mgs2.jpg",         url: "https://en.wikipedia.org/wiki/Metal_Gear_Solid_2:_Sons_of_Liberty" },
+          { name: "death stranding", img: "faveimages/deathstranding.jpg",         url: "https://en.wikipedia.org/wiki/Death_Stranding" },
+          { name: "final fantasy iv", img: "faveimages/ffiv.webp",         url: "https://en.wikipedia.org/wiki/Final_Fantasy_IV" },
+          { name: "fatal frame",      img: "faveimages/ff2.webp", url: "https://en.wikipedia.org/wiki/Fatal_Frame" },
+          { name: "castlevania",      img: "faveimages/sotn.jpeg", url: "https://en.wikipedia.org/wiki/Castlevania" },
+          { name: "dark souls",          img: "faveimages/ds3.jpg",     url: "https://en.wikipedia.org/wiki/Dark_Souls" }
+        ]
+      },
+      movies: {
+        layout: "cols-2 poster bw",
+        items: [
+          { name: "the dark knight",    img: "faveimages/thedarkknight.jpg",      url: "https://letterboxd.com/film/the-dark-knight/" },
+          { name: "mishima : a life in four chapters",        img: "faveimages/mishima.jpg",   url: "https://letterboxd.com/film/mishima-a-life-in-four-chapters/" },
+          { name: "ponyo",      img: "faveimages/ponyo.png", url: "https://letterboxd.com/film/ponyo/" },
+          { name: "star wars",           img: "faveimages/starwars.jpg",      url: "https://letterboxd.com/film/star-wars/" },
+          { name: "interstellar",          img: "faveimages/interstellar.jpg",     url: "https://letterboxd.com/film/interstellar/" },
+          { name: "2001 a space odyssey", img: "faveimages/2001.png",     url: "https://letterboxd.com/film/2001-a-space-odyssey/" },
+          { name: "look back", img: "faveimages/lookback.png",     url: "https://letterboxd.com/film/look-back-2024/" }
+        ]
+      },
+    };
 
-        <p>
-            A placeholder for another article. An exploration of
-            perception, reality, and the strange relationship between
-            the world we experience and the world that actually exists.
-        </p>
+    // favorites category selector
+    const categories = Object.keys(favorites);
+    let index = 0;
+    const label = document.getElementById("category");
+    const favGrid = document.getElementById("fav-grid");
 
-        <p><strong>ilya faie</strong></p>
-        <p><em>Coming soon</em></p>
+    function showCategory() {
+      const cat = favorites[categories[index]];
+      label.textContent = categories[index];
+      favGrid.className = "fav-grid " + cat.layout;
+      favGrid.innerHTML = cat.items.map(item => `
+        <a class="fav-item" href="${item.url}" target="_blank" title="${item.name}">
+          <img src="${item.img}" alt="${item.name}">
+        </a>
+      `).join("");
+      document.getElementById("fav-area").scrollTop = 0;
+    }
 
-        <hr>
+    document.getElementById("prev").onclick = () => {
+      index = (index - 1 + categories.length) % categories.length;
+      showCategory();
+    };
 
-        <div class="article-content">
-            <p>
-                What does it mean for something to be real? We tend
-                to assume that the world around us exists exactly as
-                we perceive it, but perception is hardly a perfect
-                window into reality.
-            </p>
+    document.getElementById("next").onclick = () => {
+      index = (index + 1) % categories.length;
+      showCategory();
+    };
 
-            <p>
-                Our senses interpret, filter, and reconstruct the
-                information we receive. What we experience, then,
-                may be less a direct reflection of reality and more
-                an interpretation of it.
-            </p>
-        </div>
-    </article>
+    showCategory();
 
-    <hr>
+    // expandable reviews
+    function toggleReview(button) {
+      const review = button.nextElementSibling;
+      if (!review) return;
+      const open = review.style.display === "block";
+      review.style.display = open ? "none" : "block";
+      button.textContent = open ? "read review" : "hide review";
+    }
 
-    <!-- Footer -->
-    <p>© 2026 marionette</p>
+    // search + filters (all update live as you type / change)
+    function applyFilters() {
+      const searchTerm = document.getElementById("searchBar").value.toLowerCase().trim();
+      const typeFilter = document.getElementById("typeFilter").value;
+      const starsFilter = document.getElementById("starsFilter").value;
+      const yearFilter = document.getElementById("yearFilter").value;
 
-    <script>
-        function toggleArticle(id, button) {
-            const content = document.getElementById(id);
+      let shown = 0;
 
-            content.hidden = !content.hidden;
+      document.querySelectorAll(".review").forEach(item => {
+        const title = item.querySelector("h3").textContent.toLowerCase();
+        const year = item.dataset.date.slice(0, 4);
 
-            button.textContent = content.hidden
-                ? "Read more ↓"
-                : "Read less ↑";
+        const matches =
+          (!searchTerm || title.includes(searchTerm)) &&
+          (typeFilter === "all" || item.dataset.type === typeFilter) &&
+          (starsFilter === "all" || item.dataset.stars === starsFilter) &&
+          (yearFilter === "all" || year === yearFilter);
+
+        item.style.display = matches ? "flex" : "none";
+        if (matches) shown++;
+      });
+
+      document.getElementById("no-results").style.display = shown ? "none" : "block";
+    }
+
+    document.getElementById("searchBar").addEventListener("input", applyFilters);
+    ["typeFilter", "starsFilter", "yearFilter"].forEach(id =>
+      document.getElementById(id).addEventListener("change", applyFilters)
+    );
+
+    // yearly stats (counted from the reviews on the page, current year only)
+    const BOOK_GOAL = 50;
+
+    function updateStats() {
+      const year = String(new Date().getFullYear());
+      const counts = { book: 0, game: 0, movie: 0 };
+
+      document.querySelectorAll(".review").forEach(item => {
+        if (item.dataset.date.slice(0, 4) === year && counts[item.dataset.type] !== undefined) {
+          counts[item.dataset.type]++;
         }
-    </script>
+      });
+
+      document.getElementById("stats-title").textContent = year + " stats";
+
+      // bar caps at 100% once the goal is hit, but the count keeps going
+      const pct = Math.min(counts.book / BOOK_GOAL, 1) * 100;
+      document.getElementById("booksBar").style.width = pct + "%";
+      document.getElementById("booksCount").textContent = counts.book + " / " + BOOK_GOAL;
+
+      document.getElementById("gamesCount").textContent = counts.game;
+      document.getElementById("moviesCount").textContent = counts.movie;
+    }
+
+    updateStats();
+  </script>
 
 </body>
 </html>
