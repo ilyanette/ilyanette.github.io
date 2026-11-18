@@ -1,9 +1,56 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>On the Bicameral Mind</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles</title>
+
+    <style>
+        body {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 35px;
+            line-height: 1.5;
+        }
+
+        article {
+            margin-bottom: 45px;
+        }
+
+        .article-content {
+            margin-top: 25px;
+        }
+
+        .article-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .read-more {
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+        }
+
+        .article-separator {
+            border: none;
+            border-top: 4px solid;
+            margin: 45px 0;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0 20px;
+                margin: 25px auto;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     <!-- Navigation -->
@@ -12,24 +59,128 @@
 
     <hr>
 
-    <!-- Article Header -->
-    <h1>On the Bicameral Mind</h1>
-    <p>Julian Jaynes' theory of the bicameral mind is quite a controversial, and admittedly strange, concept to grasp. But it is really so unbelievable?</p>
-    <p><strong>ilya faie</strong></p>
-    <p><em>02/04/28</em></p>
+    <!-- Article One -->
+    <article>
+        <h1>On the Bicameral Mind</h1>
 
-    <hr>
+        <p>
+            Julian Jaynes' theory of the bicameral mind is quite a
+            controversial, and admittedly strange, concept to grasp.
+            But is it really so unbelievable?
+        </p>
 
-    <!-- Article Content -->
-    <p>
-      Is consciousness real? Well, of course it is, you'd say. I'm conscious - I have thoughts, emotions, and everything in between, therefore at least one person is conscious. But that's where it becomes interesting, philosophically. You can say you're conscious, and you can think you're conscious, but there is no actual method of proving that you are. "I think, therefore I am". But what if you don't think? Can you prove that you do? One who does not think will still believe themselves to be a conscious being, capable of thinking, and will insist that they are conscious. </p>
-    <p>
-      This is where the concept of a philosophical zombie, or a p-zombie, comes in. No, they aren't really zombies, and they don't really pose a threat to humans - besides being an existential one at least. A p-zombie will go through their life exactly like a normal human being. Talking, laughing, reacting to pain, forming relationships, even debating philosophy - but with one crucial difference: there is no inner experience. No “what it’s like” to be them. No subjective awareness. From the outside, they are indistinguishable from a conscious person, yet on the inside there is… nothing. </p>
-      
+        <p><strong>Ilya Faie</strong></p>
+        <p><em>02/04/26</em></p>
+
+        <hr>
+
+        <div class="article-content">
+            <p>
+                Is consciousness real? Well, of course it is, you'd say.
+                I'm conscious - I have thoughts, emotions, and everything
+                in between, therefore at least one person is conscious.
+                But that's where it becomes interesting, philosophically.
+                You can say you're conscious, and you can think you're
+                conscious, but there is no actual method of proving that
+                you are. "I think, therefore I am". But what if you don't
+                think? Can you prove that you do? One who does not think
+                will still believe themselves to be a conscious being,
+                capable of thinking, and will insist that they are conscious.
+            </p>
+
+            <p>
+                This is where the concept of a philosophical zombie,
+                or a p-zombie, comes in. No, they aren't really zombies,
+                and they don't really pose a threat to humans - besides
+                being an existential one at least. A p-zombie will go
+                through their life exactly like a normal human being.
+                Talking, laughing, reacting to pain, forming relationships,
+                even debating philosophy - but with one crucial difference:
+                there is no inner experience. No “what it’s like” to be
+                them. No subjective awareness. From the outside, they are
+                indistinguishable from a conscious person, yet on the
+                inside there is… nothing.
+            </p>
+
+            <!-- Hidden continuation -->
+            <div id="article-one-more" hidden>
+                <p>
+                    This raises a rather uncomfortable question:
+                    if consciousness cannot be observed directly,
+                    how can we ever know that it exists in anyone
+                    other than ourselves?
+                </p>
+
+                <p>
+                    And perhaps more importantly, what would it mean
+                    if the experience we call consciousness is not
+                    something humans have always possessed?
+                </p>
+
+                <p>
+                    This is where Julian Jaynes' theory becomes
+                    particularly interesting...
+                </p>
+            </div>
+
+            <button class="read-more"
+                    onclick="toggleArticle('article-one-more', this)">
+                Read more ↓
+            </button>
+        </div>
+    </article>
+
+    <!-- Separator -->
+    <hr class="article-separator">
+
+    <!-- Article Two (Placeholder) -->
+    <article>
+        <h1>On the Nature of Reality</h1>
+
+        <p>
+            A placeholder for another article. An exploration of
+            perception, reality, and the strange relationship between
+            the world we experience and the world that actually exists.
+        </p>
+
+        <p><strong>ilya faie</strong></p>
+        <p><em>Coming soon</em></p>
+
+        <hr>
+
+        <div class="article-content">
+            <p>
+                What does it mean for something to be real? We tend
+                to assume that the world around us exists exactly as
+                we perceive it, but perception is hardly a perfect
+                window into reality.
+            </p>
+
+            <p>
+                Our senses interpret, filter, and reconstruct the
+                information we receive. What we experience, then,
+                may be less a direct reflection of reality and more
+                an interpretation of it.
+            </p>
+        </div>
+    </article>
+
     <hr>
 
     <!-- Footer -->
     <p>© 2026 marionette</p>
+
+    <script>
+        function toggleArticle(id, button) {
+            const content = document.getElementById(id);
+
+            content.hidden = !content.hidden;
+
+            button.textContent = content.hidden
+                ? "Read more ↓"
+                : "Read less ↑";
+        }
+    </script>
 
 </body>
 </html>
